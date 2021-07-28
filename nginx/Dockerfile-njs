@@ -1,0 +1,145 @@
+FROM fj0rd/io:os
+
+ARG nginx_repo=nginx/nginx
+ARG nchan_repo=slact/nchan
+ARG s6overlay_repo=just-containers/s6-overlay
+ARG websocat_repo=vi/websocat
+ARG watchexec_repo=watchexec/watchexec
+ARG nvim_repo=neovim/neovim
+ARG nvim_config=fj0r/nvim-lua
+ARG rg_repo=BurntSushi/ripgrep
+
+ARG github_header="Accept: application/vnd.github.v3+json"
+ARG github_api=https://api.github.com/repos
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
+ENV DEV_DEPS \
+        apache2-utils \
+        libpcre3-dev libssl-dev \
+        zlib1g-dev
+
+ENV BUILD_DEPS software-properties-common build-essential
+
+ENV PATH=/opt/nginx/sbin:$PATH
+
+RUN set -eux \
+  ; apt-get update \
+  ; apt-get upgrade -y \
+  ; DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends \
+    iproute2 procps curl jq xz-utils \
+    sudo git openssh-server \
+    lsb-release gnupg \
+    $DEV_DEPS \
+    $BUILD_DEPS \
+  \
+  ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
+  \
+  ; mkdir -p /var/run/sshd \
+  ; sed -i /etc/ssh/sshd_config \
+        -e 's!.*\(AuthorizedKeysFile\).*!\1 /etc/authorized_keys/%u!' \
+        -e 's!.*\(GatewayPorts\).*!\1 yes!' \
+        -e 's!.*\(PasswordAuthentication\).*yes!\1 no!' \
+  ; echo "Match Address 10.0.0.0/8,172.17.0.0/16,192.168.0.0/16\n    PasswordAuthentication yes" \
+        >> /etc/ssh/sshd_config \
+  \
+  ; git config --global pull.rebase false \
+  ; git config --global init.defaultBranch main \
+  ; git config --global user.name "unnamed" \
+  ; git config --global user.email "unnamed@container" \
+  \
+  ; rg_ver=$(curl -sSL -H "'$github_header'" $github_api/${rg_repo}/releases | jq -r '.[0].tag_name') \
+  ; rg_url=https://github.com/${rg_repo}/releases/download/${rg_ver}/ripgrep-${rg_ver}-x86_64-unknown-linux-musl.tar.gz \
+  ; curl -sSL ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_ver}-x86_64-unknown-linux-musl/rg \
+  \
+  ; nvim_ver=$(curl -sSL -H "'$github_header'" $github_api/${nvim_repo}/releases | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
+  ; nvim_url=https://github.com/${nvim_repo}/releases/download/${nvim_ver}/nvim-linux64.tar.gz \
+  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; cfg_home=/etc/skel \
+  ; mkdir -p /opt/language-server \
+  ; mkdir -p /opt/vim \
+  ; mkdir $cfg_home/.config \
+  ; ln -sf $cfg_home/.config /root \
+  ; nvim_home=$cfg_home/.config/nvim \
+  ; nvim_config_ver=$(curl -sSL -H "'$github_header'" $github_api/${nvim_config}/releases | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
+  ; nvim_config_url=https://github.com/${nvim_config}/releases/download/${nvim_config_ver}/nvim-cfg.tar.gz \
+  ; curl -sSL ${nvim_config_url} | tar zxf - -C $cfg_home/.config \
+  #; git clone --recursive --depth=1 https://github.com/fj0r/nvim-lua.git $nvim_home \
+  #; nvim --headless +'autocmd User PackerComplete ++once sleep 300 | quitall' +'lua require("packer").sync()' \
+  ; rm -rf $nvim_home/pack/packer/start/*/.git \
+  ; mv $nvim_home/pack /opt/vim \
+  ; ln -sf /opt/vim/pack $nvim_home \
+  \
+  ; s6overlay_ver=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
+  ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
+  ; curl --fail --silent -L ${s6overlay_url} | tar xzvf - -C / \
+  \
+  ; watchexec_ver=$(curl -sSL -H "'$github_header'" $github_api/${watchexec_repo}/releases | jq -r '.[0].tag_name' | cut -c 6-) \
+  ; watchexec_url=https://github.com/${watchexec_repo}/releases/download/cli-v${watchexec_ver}/watchexec-${watchexec_ver}-x86_64-unknown-linux-musl.tar.xz \
+  ; curl -sSL ${watchexec_url} | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_ver}-x86_64-unknown-linux-musl/watchexec \
+  \
+  ; websocat_ver=$(curl -sSL -H "'$github_header'" $github_api/${websocat_repo}/releases | jq -r '.[0].tag_name') \
+  ; websocat_url=https://github.com/${websocat_repo}/releases/download/${websocat_ver}/websocat_amd64-linux-static \
+  ; curl -sSLo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
+  \
+  ; build_dir=/root/build \
+  ; mkdir -p $build_dir \
+  \
+  ; cd $build_dir \
+  ; mkdir njs \
+  ; curl -sSL http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
+  \
+  ; cd $build_dir \
+  ; NCHAN_VER=$(curl -sSL -H "'$github_header'" $github_api/${nchan_repo}/tags | jq -r '.[0].name' | cut -c 2-) \
+  ; curl -sSL https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  \
+  ; cd $build_dir \
+  ; NGINX_VER=$(curl -sSL -H "'$github_header'" $github_api/${nginx_repo}/tags | jq -r '.[0].name' | cut -c 9-) \
+  ; curl -sSL https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
+  \
+  ; cd nginx-${NGINX_VER} \
+  ; ./configure --prefix=/opt/nginx \
+        --with-threads \
+        --with-file-aio \
+        --with-http_v2_module \
+        --with-http_ssl_module \
+        --with-http_auth_request_module \
+        --with-http_addition_module \
+        --with-http_gzip_static_module \
+        --with-http_random_index_module \
+        --with-http_slice_module \
+        --with-http_sub_module \
+        --with-http_stub_status_module \
+        --with-http_realip_module \
+        --with-stream \
+        --with-stream_ssl_module \
+        --with-stream_realip_module \
+        --with-stream_ssl_preread_module \
+        --add-module=../njs/nginx \
+        --add-dynamic-module=../nchan-${NCHAN_VER} \
+  ; make \
+  ; make install \
+  \
+  ; rm -rf $build_dir \
+  ; ln -fs /opt/nginx/conf /etc/nginx \
+  ; mkdir -p /etc/nginx/conf.d \
+  ; echo 'shopt -s cdable_vars' >> /root/.bashrc \
+  ; echo 'export or=/etc/nginx' >> /root/.bashrc \
+  ; echo 'export logs=/opt/nginx/logs' >> /root/.bashrc \
+  \
+  ; apt-get -y remove ${BUILD_DEPS} \
+  ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+COPY services.n /etc/services.d
+COPY config.n /etc/nginx
+COPY reload-nginx /usr/local/bin
+WORKDIR /srv
+
+VOLUME [ "/srv" ]
+EXPOSE 80 443
+
+ENTRYPOINT [ "/init" ]
+
+ENV WEB_SERVERNAME=
+ENV WEB_ROOT=
+ENV WS_FIXED=

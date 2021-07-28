@@ -1,0 +1,89 @@
+server {
+    set $root       '/srv';
+    listen          80;
+#   listen          443 ssl;
+    server_name     _;
+    charset         utf-8;
+
+    include         http_params;
+
+    root            $root;
+    #access_log     /var/log/nginx/host.access.log  main;
+
+    location /bin {
+        default_type 'application/json';
+        js_content utils.main;
+    }
+
+    location / {
+        index index.php index.html index.htm;
+        if (!-e $request_filename) {
+            rewrite ^(.*)$ /index.php?s=$1 last;
+            break;
+        }
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_index  index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+    }
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    #error_page     404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page      500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+
+    location = /tunnel {
+        include     http_params;
+        include     websocket_params;
+        proxy_pass  http://127.0.0.1:8001;
+    }
+
+    location /in/ {
+        include     http_params;
+        proxy_pass http://127.0.0.1:8000/;
+    }
+
+    location = /~!frp {
+        include     http_params;
+        include     websocket_params;
+        proxy_pass  http://127.0.0.1:7000;
+    }
+
+    location ~* /([0-9]+)/(.*) {
+        include     http_params;
+        proxy_pass http://127.0.0.1:$1/$2;
+    }
+
+
+    location = /websocat {
+        include     http_params;
+        include     websocket_params;
+        proxy_pass  http://127.0.0.1:9999;
+    }
+}
+
