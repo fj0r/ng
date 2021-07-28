@@ -50,7 +50,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: nginx
-          file: Dockerfile-njs
+          file: nginx/Dockerfile-njs
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: nginx
-          file: Dockerfile-openresty
+          file: nginx/Dockerfile-openresty
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:or
           labels: ${{ steps.meta.outputs.labels }}
@@ -76,7 +76,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: postgres
-          file: Dockerfile-gis
+          file: postgres/Dockerfile-gis
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pgis
           labels: ${{ steps.meta.outputs.labels }}
@@ -85,7 +85,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: Dockerfile-7
+          file: php/Dockerfile-7
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php7
           labels: ${{ steps.meta.outputs.labels }}
@@ -94,7 +94,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: Dockerfile-7x
+          file: php/Dockerfile-7x
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php7x
           labels: ${{ steps.meta.outputs.labels }}
@@ -103,7 +103,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: Dockerfile-8x
+          file: php/Dockerfile-8x
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php8x
           labels: ${{ steps.meta.outputs.labels }}
@@ -112,7 +112,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: java
-          file: Dockerfile-jdk-11
+          file: java/Dockerfile-jdk-11
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:java11
           labels: ${{ steps.meta.outputs.labels }}
@@ -121,7 +121,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: java
-          file: Dockerfile-es
+          file: java/Dockerfile-es
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:es
           labels: ${{ steps.meta.outputs.labels }}
@@ -130,17 +130,8 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: java
-          file: Dockerfile-polynote
+          file: java/Dockerfile-polynote
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:polynote
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build flink
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: java
-          file: Dockerfile-flink
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:flink
           labels: ${{ steps.meta.outputs.labels }}
 
