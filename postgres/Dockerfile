@@ -5,6 +5,7 @@ ENV BUILD_DEPS \
     git \
     cmake \
     pkg-config \
+    lsb-release \
     libcurl4-openssl-dev \
     uuid-dev \
     build-essential \
@@ -111,13 +112,8 @@ RUN set -eux \
   ; cmake .. \
   ; make && make install \
   \
-  ; cd $build_dir \
-  ; timescaledb_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/timescale/timescaledb/releases | jq -r '.[0].tag_name') \
-  ; curl -sSL https://github.com/timescale/timescaledb/archive/${timescaledb_version}.tar.gz | tar zxf - \
-  ; cd timescaledb-${timescaledb_version} \
-  ; ./bootstrap -DREGRESS_CHECKS=OFF \
-  ; cd build && make \
-  ; make install \
+  ; curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | bash \
+  ; apt-get install -y --no-install-recommends timescaledb-2-postgresql-${PG_MAJOR} \
   \
   ; rm -rf $build_dir \
   \
