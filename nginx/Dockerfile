@@ -4,7 +4,6 @@ ARG nginx_repo=nginx/nginx
 ARG nchan_repo=slact/nchan
 ARG s6overlay_repo=just-containers/s6-overlay
 ARG websocat_repo=vi/websocat
-ARG watchexec_repo=watchexec/watchexec
 ARG nvim_repo=neovim/neovim
 ARG nvim_config=fj0r/nvim-lua
 ARG rg_repo=BurntSushi/ripgrep
@@ -76,10 +75,6 @@ RUN set -eux \
   ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
   ; curl --fail --silent -L ${s6overlay_url} | tar xzvf - -C / \
   \
-  ; watchexec_ver=$(curl -sSL -H "'$github_header'" $github_api/${watchexec_repo}/releases | jq -r '.[0].tag_name' | cut -c 6-) \
-  ; watchexec_url=https://github.com/${watchexec_repo}/releases/download/cli-v${watchexec_ver}/watchexec-${watchexec_ver}-x86_64-unknown-linux-musl.tar.xz \
-  ; curl -sSL ${watchexec_url} | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_ver}-x86_64-unknown-linux-musl/watchexec \
-  \
   ; websocat_ver=$(curl -sSL -H "'$github_header'" $github_api/${websocat_repo}/releases | jq -r '.[0].tag_name') \
   ; websocat_url=https://github.com/${websocat_repo}/releases/download/${websocat_ver}/websocat_amd64-linux-static \
   ; curl -sSLo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
@@ -134,7 +129,7 @@ RUN set -eux \
 
 COPY services.n /etc/services.d
 COPY config.n /etc/nginx
-COPY reload-nginx /usr/local/bin
+#COPY reload-nginx /usr/local/bin
 WORKDIR /srv
 
 VOLUME [ "/srv" ]

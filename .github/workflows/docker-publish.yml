@@ -46,23 +46,32 @@ jobs:
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
+      - name: Build apisix
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: apisix
+          file: apisix/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:apisix
+          labels: ${{ steps.meta.outputs.labels }}
+
       - name: Build
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: nginx
-          file: nginx/Dockerfile-njs
+          file: nginx/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build or
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: nginx
-          file: nginx/Dockerfile-openresty
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:or
-          labels: ${{ steps.meta.outputs.labels }}
+      #- name: Build or
+      #  uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      #  with:
+      #    context: nginx
+      #    file: nginx/Dockerfile-openresty
+      #    push: ${{ github.event_name != 'pull_request' }}
+      #    tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:or
+      #    labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build pg
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
