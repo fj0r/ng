@@ -10,7 +10,7 @@ server {
     root            $root;
     #access_log     /var/log/nginx/host.access.log  main;
 
-    location /bin {
+    location ~* /bin/(.*) {
         default_type 'application/json';
         js_content utils.main;
     }
