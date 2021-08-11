@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM fj0rd/io:base
 
 ARG openresty_repo=openresty/openresty
 ARG nchan_repo=slact/nchan
@@ -26,15 +26,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    sudo tzdata \
-    iproute2 procps curl jq xz-utils \
     git openssh-server \
-    $DEV_DEPS \
-    $BUILD_DEPS \
-  \
-  ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
-  ; echo "$TIMEZONE" > /etc/timezone \
-  ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
+    $DEV_DEPS $BUILD_DEPS \
   \
   ; mkdir -p /var/run/sshd \
   ; sed -i /etc/ssh/sshd_config \

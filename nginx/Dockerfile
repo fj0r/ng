@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM fj0rd/io:base
 
 ARG nginx_repo=nginx/nginx
 ARG nchan_repo=slact/nchan
@@ -26,15 +26,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    iproute2 procps curl jq xz-utils \
-    sudo tzdata git openssh-server \
-    lsb-release gnupg \
-    $DEV_DEPS \
-    $BUILD_DEPS \
-  \
-  ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
-  ; echo "$TIMEZONE" > /etc/timezone \
-  ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
+    git openssh-server lsb-release gnupg \
+    $DEV_DEPS $BUILD_DEPS \
   \
   ; mkdir -p /var/run/sshd \
   ; sed -i /etc/ssh/sshd_config \
