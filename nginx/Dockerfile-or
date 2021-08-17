@@ -6,7 +6,7 @@ ARG inlets_repo=inlets/inlets
 ARG frp_repo=fatedier/frp
 ARG s6overlay_repo=just-containers/s6-overlay
 
-ARG github_header="Accept: application/vnd.github.v3+json"
+ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
 
 ENV DEV_DEPS \

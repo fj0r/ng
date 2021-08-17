@@ -7,7 +7,7 @@ ARG websocat_repo=vi/websocat
 ARG nvim_repo=neovim/neovim
 ARG nvim_config=fj0r/nvim-lua
 
-ARG github_header="Accept: application/vnd.github.v3+json"
+ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai

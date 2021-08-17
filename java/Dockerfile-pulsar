@@ -2,7 +2,7 @@ FROM fj0rd/java:11
 
 WORKDIR /pulsar
 ENV PATH=/pulsar/bin:$PATH
-ARG github_header="Accept: application/vnd.github.v3+json"
+ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
 ARG pulsar_repo=apache/pulsar
 ARG pulsarctl_repo=streamnative/pulsarctl
