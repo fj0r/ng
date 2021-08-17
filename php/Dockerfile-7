@@ -50,7 +50,7 @@ COPY setup-php /setup-php
 COPY services.d/php-fpm /etc/services.d/php-fpm
 
 RUN set -ex \
-  ; curl -sSL https://getcomposer.org/installer \
+  ; xh -F https://getcomposer.org/installer \
     | php -- --install-dir=/usr/local/bin --filename=composer
 
 ENV PHP_DEBUG=

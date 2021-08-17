@@ -22,7 +22,7 @@ ENV PHP_PKGS \
 
 RUN set -eux \
   ; apt-get update \
-  ; curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+  ; xh -F https://deb.nodesource.com/setup_16.x | bash - \
   ; apt-get install -y --no-install-recommends nodejs cron \
   ; apt-get install -y --no-install-recommends $PHP_PKGS \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -52,7 +52,7 @@ COPY setup-php /setup-php
 COPY services.d/php-fpm /etc/services.d/php-fpm
 
 RUN set -ex \
-  ; curl -sSL https://getcomposer.org/installer \
+  ; xh -F https://getcomposer.org/installer \
     | php -- --install-dir=/usr/local/bin --filename=composer \
   ; npm install -g intelephense \
   ; cd /opt; git clone --depth=1 https://github.com/xdebug/vscode-php-debug.git; cd vscode-php-debug; npm install; npm run build \

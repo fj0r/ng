@@ -13,8 +13,8 @@ ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 RUN set -eux \
   ; mkdir -p /opt/language-server/jdtls \
-  ; jdtls_latest=$(curl https://download.eclipse.org/jdtls/snapshots/latest.txt) \
-  ; curl https://download.eclipse.org/jdtls/snapshots/${jdtls_latest} \
+  ; jdtls_latest=$(xh https://download.eclipse.org/jdtls/snapshots/latest.txt) \
+  ; xh -F https://download.eclipse.org/jdtls/snapshots/${jdtls_latest} \
     | tar --no-same-owner -zxf - -C /opt/language-server/jdtls \
   \
   ; npm cache clean -f

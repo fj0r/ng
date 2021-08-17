@@ -2,7 +2,7 @@ FROM fj0rd/io
 
 RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
-  ; curl -sSL https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add - \
+  ; xh -F https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add - \
   ; add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ \
   ; apt-get update \
   ; apt-get upgrade -y \
@@ -15,8 +15,8 @@ RUN set -eux \
   ; do nvim -u /etc/skel/.config/nvim/init.vim --headless +"CocInstall -sync coc-$x" +qa; done \
   \
   ; mkdir -p /opt/language-server/java \
-  ; jdtls_latest=$(curl https://download.eclipse.org/jdtls/snapshots/latest.txt) \
-  ; curl https://download.eclipse.org/jdtls/snapshots/${jdtls_latest} \
+  ; jdtls_latest=$(xh https://download.eclipse.org/jdtls/snapshots/latest.txt) \
+  ; xh -F https://download.eclipse.org/jdtls/snapshots/${jdtls_latest} \
     | tar --no-same-owner -zxf - -C /opt/language-server/java \
   ; echo "let g:coc_user_config['java.jdt.ls.home'] = '/opt/language-server/java'" >> /etc/skel/.config/nvim/config.coc/lsp.vim \
   \

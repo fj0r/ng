@@ -20,9 +20,9 @@ ENV PHP_PKGS \
         php${PHP_VERSION}-xdebug
 
 RUN set -eux \
-  ; curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+  ; xh -F https://deb.nodesource.com/setup_16.x | bash - \
   ; apt-get install -y --no-install-recommends nodejs cron \
-  ; curl -sL https://packages.sury.org/php/apt.gpg | apt-key add - \
+  ; xh -F https://packages.sury.org/php/apt.gpg | apt-key add - \
   ; echo "deb https://packages.sury.org/php/ bullseye main"  \
         | tee /etc/apt/sources.list.d/php.list \
   ; apt-get update \
@@ -54,7 +54,7 @@ COPY setup-php /setup-php
 COPY services.d/php-fpm /etc/services.d/php-fpm
 
 RUN set -ex \
-  ; curl -sSL https://getcomposer.org/installer \
+  ; xh -F https://getcomposer.org/installer \
     | php -- --install-dir=/usr/local/bin --filename=composer \
   ; npm install -g intelephense \
   ; cd /opt; git clone --depth=1 https://github.com/xdebug/vscode-php-debug.git; cd vscode-php-debug; npm install; npm run build \

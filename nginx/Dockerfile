@@ -8,7 +8,7 @@ ARG nvim_repo=neovim/neovim
 ARG nvim_config=fj0r/nvim-lua
 ARG rg_repo=BurntSushi/ripgrep
 
-ARG github_header="Accept: application/vnd.github.v3+json"
+ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
@@ -42,50 +42,50 @@ RUN set -eux \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
   \
-  ; rg_ver=$(curl -sSL -H "'$github_header'" $github_api/${rg_repo}/releases | jq -r '.[0].tag_name') \
+  ; rg_ver=$(xh $github_api/${rg_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; rg_url=https://github.com/${rg_repo}/releases/download/${rg_ver}/ripgrep-${rg_ver}-x86_64-unknown-linux-musl.tar.gz \
-  ; curl -sSL ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_ver}-x86_64-unknown-linux-musl/rg \
+  ; xh -F ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_ver}-x86_64-unknown-linux-musl/rg \
   \
-  ; nvim_ver=$(curl -sSL -H "'$github_header'" $github_api/${nvim_repo}/releases | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
+  ; nvim_ver=$(xh $github_api/${nvim_repo}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
   ; nvim_url=https://github.com/${nvim_repo}/releases/download/${nvim_ver}/nvim-linux64.tar.gz \
-  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; xh -F ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
   ; cfg_home=/etc/skel \
   ; mkdir -p /opt/language-server \
   ; mkdir -p /opt/vim \
   ; mkdir $cfg_home/.config \
   ; ln -sf $cfg_home/.config /root \
   ; nvim_home=$cfg_home/.config/nvim \
-  ; nvim_config_ver=$(curl -sSL -H "'$github_header'" $github_api/${nvim_config}/releases | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
+  ; nvim_config_ver=$(xh $github_api/${nvim_config}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
   ; nvim_config_url=https://github.com/${nvim_config}/releases/download/${nvim_config_ver}/nvim-cfg.tar.gz \
-  ; curl -sSL ${nvim_config_url} | tar zxf - -C $cfg_home/.config \
+  ; xh -F ${nvim_config_url} | tar zxf - -C $cfg_home/.config \
   #; git clone --recursive --depth=1 https://github.com/fj0r/nvim-lua.git $nvim_home \
   #; nvim --headless +'autocmd User PackerComplete ++once sleep 300 | quitall' +'lua require("packer").sync()' \
   ; rm -rf $nvim_home/pack/packer/start/*/.git \
   ; mv $nvim_home/pack /opt/vim \
   ; ln -sf /opt/vim/pack $nvim_home \
   \
-  ; s6overlay_ver=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
+  ; s6overlay_ver=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
-  ; curl --fail --silent -L ${s6overlay_url} | tar xzvf - -C / \
+  ; xh -F ${s6overlay_url} | tar xzvf - -C / \
   \
-  ; websocat_ver=$(curl -sSL -H "'$github_header'" $github_api/${websocat_repo}/releases | jq -r '.[0].tag_name') \
+  ; websocat_ver=$(xh $github_api/${websocat_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; websocat_url=https://github.com/${websocat_repo}/releases/download/${websocat_ver}/websocat_amd64-linux-static \
-  ; curl -sSLo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
+  ; xh -Fo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
   \
   ; cd $build_dir \
   ; mkdir njs \
-  ; curl -sSL http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
+  ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
   \
   ; cd $build_dir \
-  ; NCHAN_VER=$(curl -sSL -H "'$github_header'" $github_api/${nchan_repo}/tags | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; NCHAN_VER=$(xh $github_api/${nchan_repo}/tags $github_header | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
   \
   ; cd $build_dir \
-  ; NGINX_VER=$(curl -sSL -H "'$github_header'" $github_api/${nginx_repo}/tags | jq -r '.[0].name' | cut -c 9-) \
-  ; curl -sSL https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
+  ; NGINX_VER=$(xh $github_api/${nginx_repo}/tags $github_header | jq -r '.[0].name' | cut -c 9-) \
+  ; xh -F https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
   \
   ; cd nginx-${NGINX_VER} \
   ; ./configure --prefix=/opt/nginx \

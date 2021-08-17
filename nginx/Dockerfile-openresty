@@ -37,22 +37,22 @@ RUN set -eux \
   ; echo "Match Address 10.0.0.0/8,172.17.0.0/16,192.168.0.0/16\n    PasswordAuthentication yes" \
         >> /etc/ssh/sshd_config \
   \
-  ; rg_ver=$(curl -sSL -H "'$github_header'" $github_api/${rg_repo}/releases | jq -r '.[0].tag_name') \
+  ; rg_ver=$(xh $github_api/${rg_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; rg_url=https://github.com/${rg_repo}/releases/download/${rg_ver}/ripgrep-${rg_ver}-x86_64-unknown-linux-musl.tar.gz \
-  ; curl -sSL ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_ver}-x86_64-unknown-linux-musl/rg \
+  ; xh -F ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_ver}-x86_64-unknown-linux-musl/rg \
   \
-  ; nvim_ver=$(curl -sSL -H "'$github_header'" $github_api/${nvim_repo}/releases | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
+  ; nvim_ver=$(xh $github_api/${nvim_repo}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
   ; nvim_url=https://github.com/${nvim_repo}/releases/download/${nvim_ver}/nvim-linux64.tar.gz \
-  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; xh -F ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
   ; cfg_home=/etc/skel \
   ; mkdir -p /opt/language-server \
   ; mkdir -p /opt/vim \
   ; mkdir $cfg_home/.config \
   ; ln -sf $cfg_home/.config /root \
   ; nvim_home=$cfg_home/.config/nvim \
-  ; nvim_config_ver=$(curl -sSL -H "'$github_header'" $github_api/${nvim_config}/releases | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
+  ; nvim_config_ver=$(xh $github_api/${nvim_config}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
   ; nvim_config_url=https://github.com/${nvim_config}/releases/download/${nvim_config_ver}/nvim-cfg.tar.gz \
-  ; curl -sSL ${nvim_config_url} | tar zxf - -C $cfg_home/.config \
+  ; xh -F ${nvim_config_url} | tar zxf - -C $cfg_home/.config \
   #; git clone --recursive --depth=1 https://github.com/fj0r/nvim-lua.git $nvim_home \
   #; nvim --headless +'autocmd User PackerComplete ++once sleep 300 | quitall' +'lua require("packer").sync()' \
   ; rm -rf $nvim_home/pack/packer/start/*/.git \
@@ -60,25 +60,25 @@ RUN set -eux \
   ; ln -sf /opt/vim/pack $nvim_home \
   \
   ; coc_lua_bin_repo=josa42/coc-lua-binaries \
-  ; lua_ls_ver=$(curl -sSL -H "'$github_header'" $github_api/${coc_lua_bin_repo}/releases | jq -r '.[0].tag_name') \
+  ; lua_ls_ver=$(xh $github_api/${coc_lua_bin_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; lua_ls_url=https://github.com/${coc_lua_bin_repo}/releases/download/${lua_ls_ver}/lua-language-server-linux.tar.gz \
   ; mkdir -p /opt/language-server/sumneko_lua \
-  ; curl -sSL ${lua_ls_url} | tar zxf - \
+  ; xh -F ${lua_ls_url} | tar zxf - \
       -C /opt/language-server/sumneko_lua \
       --strip-components=1 \
   \
-  ; s6overlay_ver=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
+  ; s6overlay_ver=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
-  ; curl --fail --silent -L ${s6overlay_url} | tar xzvf - -C / \
+  ; xh -F ${s6overlay_url} | tar xzvf - -C / \
   \
-  ; websocat_ver=$(curl -sSL -H "'$github_header'" $github_api/${websocat_repo}/releases | jq -r '.[0].tag_name') \
+  ; websocat_ver=$(xh $github_api/${websocat_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; websocat_url=https://github.com/${websocat_repo}/releases/download/${websocat_ver}/websocat_amd64-linux-static \
-  ; curl -sSLo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
+  ; xh -Fo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
   \
-  ; OPENRESTY_VER=$(curl -sSL -H "'$github_header'" $github_api/${openresty_repo}/tags | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://openresty.org/download/openresty-${OPENRESTY_VER}.tar.gz | tar -zxf - \
-  ; NCHAN_VER=$(curl -sSL -H "'$github_header'" $github_api/${nchan_repo}/tags | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; OPENRESTY_VER=$(xh $github_api/${openresty_repo}/tags $github_header | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://openresty.org/download/openresty-${OPENRESTY_VER}.tar.gz | tar -zxf - \
+  ; NCHAN_VER=$(xh $github_api/${nchan_repo}/tags $github_header | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
   ; cd openresty-${OPENRESTY_VER} \
   ; ./configure --prefix=/opt/openresty \
         --with-luajit \

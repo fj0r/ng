@@ -26,23 +26,18 @@ RUN set -eux \
     $DEV_DEPS \
     $BUILD_DEPS \
   \
-  #; frp_ver=$(curl -sSL -H "'$github_header'" $github_api/${frp_repo}/releases | jq -r '.[0].tag_name' | cut -c 2-) \
-  #; frp_url=https://github.com/${frp_repo}/releases/download/v0.36.2/frp_0.36.2_linux_amd64.tar.gz \
-  #; curl -sSL ${frp_url} | tar zxf - --strip-components=1 -C /usr/local/bin frp_${frp_ver}_linux_amd64/frps -C /etc frp_${frp_ver}_linux_amd64/frps.ini \
-  #; echo 'token = secret' >> /etc/frps.ini \
-  \
-  ; inlets_ver=$(curl -sSL -H "'$github_header'" $github_api/${inlets_repo}/releases | jq -r '.[0].tag_name') \
+  ; inlets_ver=$(xh $github_api/${inlets_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; inlets_url=https://github.com/inlets/inlets/releases/download/${inlets_ver}/inlets \
-  ; curl -sSLo /usr/local/bin/inlets ${inlets_url} ; chmod +x /usr/local/bin/inlets \
+  ; xh -Fo /usr/local/bin/inlets ${inlets_url} ; chmod +x /usr/local/bin/inlets \
   \
-  ; s6overlay_ver=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
+  ; s6overlay_ver=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
-  ; curl --fail --silent -L ${s6overlay_url} | tar xzvf - -C / \
+  ; xh -F ${s6overlay_url} | tar xzvf - -C / \
   \
-  ; OPENRESTY_VER=$(curl -sSL -H "'$github_header'" $github_api/${openresty_repo}/tags | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://openresty.org/download/openresty-${OPENRESTY_VER}.tar.gz | tar -zxf - \
-  ; NCHAN_VER=$(curl -sSL -H "'$github_header'" $github_api/${nchan_repo}/tags | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; OPENRESTY_VER=$(xh $github_api/${openresty_repo}/tags $github_header | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://openresty.org/download/openresty-${OPENRESTY_VER}.tar.gz | tar -zxf - \
+  ; NCHAN_VER=$(xh $github_api/${nchan_repo}/tags $github_header | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
   ; cd openresty-${OPENRESTY_VER} \
   ; ./configure --prefix=/opt/openresty \
         --with-luajit \
