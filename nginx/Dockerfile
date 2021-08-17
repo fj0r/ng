@@ -6,7 +6,6 @@ ARG s6overlay_repo=just-containers/s6-overlay
 ARG websocat_repo=vi/websocat
 ARG nvim_repo=neovim/neovim
 ARG nvim_config=fj0r/nvim-lua
-ARG rg_repo=BurntSushi/ripgrep
 
 ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
@@ -41,10 +40,6 @@ RUN set -eux \
   ; git config --global init.defaultBranch main \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
-  \
-  ; rg_ver=$(xh $github_api/${rg_repo}/releases $github_header | jq -r '.[0].tag_name') \
-  ; rg_url=https://github.com/${rg_repo}/releases/download/${rg_ver}/ripgrep-${rg_ver}-x86_64-unknown-linux-musl.tar.gz \
-  ; xh -F ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_ver}-x86_64-unknown-linux-musl/rg \
   \
   ; nvim_ver=$(xh $github_api/${nvim_repo}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
   ; nvim_url=https://github.com/${nvim_repo}/releases/download/${nvim_ver}/nvim-linux64.tar.gz \
