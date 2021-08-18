@@ -166,8 +166,6 @@ ENV PATH=$PATH:/usr/local/openresty/luajit/bin:/usr/local/openresty/nginx/sbin:/
 COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
-
-
 # Dockerfile - alpine-fat
 # https://github.com/openresty/docker-openresty
 #
@@ -178,8 +176,6 @@ COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 # NOTE: For envsubst, we install gettext (envsubst's source package),
 #       copy it out, then uninstall gettext (to save some space as envsubst is very small)
 #       libintl and musl are dependencies of envsubst, so those are installed as well
-
-
 
 
 RUN apk add --no-cache --virtual .build-deps \
