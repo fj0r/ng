@@ -2,7 +2,7 @@
 sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
 
 stop () {
-    kill -s QUIT $ngx
+    kill -SIGTERM $ngx
 }
 
 trap stop SIGINT SIGTERM SIGQUIT
