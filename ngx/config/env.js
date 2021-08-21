@@ -39,31 +39,17 @@ function _env(n) {
   return process.env[`UPSTREAM_${n.toUpperCase()}`]
 }
 
-
-function u_api(r) {
-  return check_scheme(_env('api'))
-}
-
-function u_api_host(r) {
-  return get_host(_env('api'))
-}
-
-function u_xmh(r) {
-  return check_scheme(_env('xmh'))
-}
-
-function u_xmh_host(r) {
-  return get_host(_env('xmh'))
-}
+//////////////////////// {{{
 
 function u_test(r) {
   return check_scheme(_env('test'))
 }
 
+function h_test(r) {
+  return get_host(_env('test'))
+}
+
 export default { bin
                , u_test
-               , u_api
-               , u_api_host
-               , u_xmh
-               , u_xmh_host
+               , h_test
                }
