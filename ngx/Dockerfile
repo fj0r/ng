@@ -68,9 +68,10 @@ RUN set -eux \
 
 VOLUME ["/var/log/nginx"]
 COPY config /etc/nginx
+COPY start.sh /
 
 WORKDIR /srv
 
 EXPOSE 80 443
 
-CMD ["nginx"]
+ENTRYPOINT /start.sh
