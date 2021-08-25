@@ -278,7 +278,7 @@ pg_setup_conf() {
 	echo "" > $PGDATA/usr.conf
 
 	for i in "${!PGCONF_@}"; do
-		local k=$(echo ${i:7} | tr '[:upper:]' '[:lower:]')
+		local k=$(echo ${i:7} | tr '[:upper:]' '[:lower:]' | sed 's!__!.!g')
 		local v=$(eval "echo \"\$$i\"")
         if [ -n "$v" ]; then
 			echo "$k = $v" >> $PGDATA/usr.conf
@@ -286,14 +286,6 @@ pg_setup_conf() {
 	done
 	echo "pg_stat_statements.max = 10000" >> $PGDATA/usr.conf
 	echo "pg_stat_statements.track = all" >> $PGDATA/usr.conf
-
-	for i in "${!PG_JIEBA_@}"; do
-		local k="pg_jieba.$(echo ${i:9} | tr '[:upper:]' '[:lower:]')"
-		local v=$(eval "echo \"\$$i\"")
-        if [ -n "$v" ]; then
-			echo "$k = $v" >> $PGDATA/usr.conf
-		fi
-	done
 }
 
 _main() {

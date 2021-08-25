@@ -126,9 +126,9 @@ COPY pgcli_config /root/.config/pgcli/config
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN ln -sf usr/local/bin/docker-entrypoint.sh / # backwards compat
 
-ENV PG_JIEBA_HMM_MODEL=
-ENV PG_JIEBA_BASE_DICT=
-ENV PG_JIEBA_USER_DICT=
+ENV PGCONF_PG_JIEBA__HMM_MODEL=
+ENV PGCONF_PG_JIEBA__BASE_DICT=
+ENV PGCONF_PG_JIEBA__USER_DICT=
 ENV PGCONF_SHARED_BUFFERS=2GB
 ENV PGCONF_WORK_MEM=32MB
 ENV PGCONF_EFFECTIVE_CACHE_SIZE=8GB
@@ -137,5 +137,4 @@ ENV PGCONF_RANDOM_PAGE_COST=1.1
 ENV PGCONF_WAL_LEVEL=logical
 ENV PGCONF_MAX_REPLICATION_SLOTS=10
 ENV PGCONF_SHARED_PRELOAD_LIBRARIES="'citus,pg_stat_statements,timescaledb,pg_jieba.so'"
-#ENV PGCONF_SHARED_PRELOAD_LIBRARIES="'pg_stat_statements,pg_jieba.so'"
 
