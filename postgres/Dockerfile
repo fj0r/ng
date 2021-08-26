@@ -76,6 +76,12 @@ RUN set -eux \
   ; make install \
   \
   ; cd $build_dir \
+  ; http_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/pramsey/pgsql-http/releases | jq -r '.[0].tag_name' | cut -c 2-) \
+  ; curl -sSL https://github.com/pramsey/pgsql-http/archive/refs/tags/v${http_version}.tar.gz | tar zxf - \
+  ; cd pgsql-http-${http_version} \
+  ; make && make install \
+  \
+  ; cd $build_dir \
   ; citus_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/citusdata/citus/releases | jq -r '.[0].tag_name' | cut -c 2-) \
   ; curl -sSL https://github.com/citusdata/citus/archive/refs/tags/v${citus_version}.tar.gz | tar zxf - \
   ; cd citus-${citus_version} \
