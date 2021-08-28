@@ -55,8 +55,8 @@ RUN set -eux \
       ${BUILD_DEPS:-} \
       ${BUILD_CITUS_DEPS:-} \
   ; pip3 --no-cache-dir install \
-      pgcli numpy pandas requests pyyaml \
-      cachetools more-itertools fn.py PyParsing \
+      pgcli numpy httpx pyyaml deepmerge cachetools \
+      pydantic more-itertools fn.py PyParsing \
   \
   #; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
   #; apt-get install -y --no-install-recommends postgresql-13-citus-10.0 \
