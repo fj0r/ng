@@ -13,10 +13,14 @@
         .message-sep {
             padding: 0 .8em 0 .2em;
         }
+
+        .message-sender {
+            color: gray
+        }
     </style>
     <body>
-        <div id='sink'>
-        <div>
+        <div id='sink'></div>
+        <input type="text" id="source" size="80">
     </body>
     <script type="text/javascript">
         //options
@@ -41,32 +45,56 @@
             qs[k] = v
         })
 
+        const source = document.getElementById('source')
+
+        const sender = Math.random().toString(36).slice(2)
+        source.addEventListener('keyup', ev => {
+            if (ev.key !== 'Enter') return
+            fetch(`pub-${qs.id}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    type: 'hello',
+                    sender,
+                    text: source.value
+                })
+            }).then(x => source.value = '')
+            ev.preventDefault()
+        })
+
+
         const sink = document.getElementById('sink')
 
         const drop = x => {
             if (x.type === 'hello') {
                 let newNode = document.createElement('div')
                 let sender = document.createElement('div')
-                newNode.appendChild(sender)
                 let sep = document.createElement('div')
-                newNode.appendChild(sep)
                 let message = document.createElement('div')
-                newNode.appendChild(message)
+
+                newNode.classList.add('message-record')
+                sink.appendChild(newNode)
+
+                sender.classList.add('message-sender')
+                sender.innerHTML = x.sender
+                newNode.appendChild(sender)
 
                 sep.innerHTML = ' : '
                 sep.classList.add('message-sep')
+                newNode.appendChild(sep)
 
-                sink.appendChild(newNode)
-                newNode.classList.add('message-record')
-
-                sender.innerHTML = x.sender
                 message.innerHTML = x.text
                 message.style.color = x.color
+                newNode.appendChild(message)
             }
         }
 
-
         const sub = new NchanSubscriber(`sub-${qs.id}`, opt);
+
+        sub.on("message", function(message, message_metadata) {
+            // message is a string
+            // message_metadata is a hash that may contain 'id' and 'content-type'
+            drop(JSON.parse(message))
+        });
 
         sub.on("transportSetup", function(opt, subscriberName) {
             // opt is a hash/object - not all transports support all options equally. Only longpoll supports arbitrary headers
@@ -86,11 +114,6 @@
             // subscriberName is a string
         });
 
-        sub.on("message", function(message, message_metadata) {
-            // message is a string
-            // message_metadata is a hash that may contain 'id' and 'content-type'
-            drop(JSON.parse(message))
-        });
 
         sub.on('connect', function(evt) {
             //fired when first connected.
