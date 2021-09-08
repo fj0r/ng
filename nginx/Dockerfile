@@ -4,8 +4,6 @@ ARG nginx_repo=nginx/nginx
 ARG nchan_repo=slact/nchan
 ARG s6overlay_repo=just-containers/s6-overlay
 ARG websocat_repo=vi/websocat
-ARG nvim_repo=neovim/neovim
-ARG nvim_config=fj0r/nvim-lua
 
 ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
@@ -41,23 +39,13 @@ RUN set -eux \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
   \
-  ; nvim_ver=$(xh $github_api/${nvim_repo}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
-  ; nvim_url=https://github.com/${nvim_repo}/releases/download/${nvim_ver}/nvim-linux64.tar.gz \
-  ; xh -F ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
-  ; cfg_home=/etc/skel \
-  ; mkdir -p /opt/language-server \
-  ; mkdir -p /opt/vim \
-  ; mkdir $cfg_home/.config \
-  ; ln -sf $cfg_home/.config /root \
-  ; nvim_home=$cfg_home/.config/nvim \
-  ; nvim_config_ver=$(xh $github_api/${nvim_config}/releases $github_header | jq -r '[.[]|select(.prerelease==false)][0].tag_name') \
-  ; nvim_config_url=https://github.com/${nvim_config}/releases/download/${nvim_config_ver}/nvim-cfg.tar.gz \
-  ; xh -F ${nvim_config_url} | tar zxf - -C $cfg_home/.config \
-  #; git clone --recursive --depth=1 https://github.com/fj0r/nvim-lua.git $nvim_home \
-  #; nvim --headless +'autocmd User PackerComplete ++once sleep 300 | quitall' +'lua require("packer").sync()' \
-  ; rm -rf $nvim_home/pack/packer/start/*/.git \
-  ; mv $nvim_home/pack /opt/vim \
-  ; ln -sf /opt/vim/pack $nvim_home \
+  ; mkdir -p /opt/helix \
+  ; helix_ver=$(xh $github_api/helix-editor/helix/releases $github_header | jq -r '.[0].tag_name')  \
+  ; helix_url=https://github.com/helix-editor/helix/releases/download/${helix_ver}/helix-${helix_ver}-x86_64-linux.tar.xz \
+  ; xh -F ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
+  ; ln -sf /opt/helix/hx /usr/local/bin/h \
+  ; mkdir -p ~/.config/helix \
+  ; xh -F https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
   \
   ; s6overlay_ver=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].tag_name') \
   ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
