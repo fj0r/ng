@@ -40,19 +40,16 @@ RUN set -eux \
   ; git config --global user.email "unnamed@container" \
   \
   ; mkdir -p /opt/helix \
-  ; helix_ver=$(xh $github_api/helix-editor/helix/releases $github_header | jq -r '.[0].tag_name')  \
-  ; helix_url=https://github.com/helix-editor/helix/releases/download/${helix_ver}/helix-${helix_ver}-x86_64-linux.tar.xz \
+  ; helix_url=$(xh $github_api/helix-editor/helix/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
   ; xh -F ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
   ; ln -sf /opt/helix/hx /usr/local/bin/h \
   ; mkdir -p ~/.config/helix \
   ; xh -F https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
   \
-  ; s6overlay_ver=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].tag_name') \
-  ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_ver}/s6-overlay-amd64.tar.gz \
+  ; s6overlay_url=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v sig | grep amd64.tar) \
   ; xh -F ${s6overlay_url} | tar xzvf - -C / \
   \
-  ; websocat_ver=$(xh $github_api/${websocat_repo}/releases $github_header | jq -r '.[0].tag_name') \
-  ; websocat_url=https://github.com/${websocat_repo}/releases/download/${websocat_ver}/websocat_amd64-linux-static \
+  ; websocat_url=$(xh $github_api/${websocat_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v nossl | grep amd64-linux-static) \
   ; xh -Fo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
   \
   ; build_dir=/root/build \
