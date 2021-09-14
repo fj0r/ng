@@ -14,7 +14,7 @@ ENV DEV_DEPS \
         libpcre3-dev libssl-dev \
         zlib1g-dev
 
-ENV BUILD_DEPS software-properties-common build-essential
+ENV BUILD_DEPS lsb-release software-properties-common build-essential
 
 ENV PATH=/opt/nginx/sbin:$PATH
 
@@ -23,7 +23,7 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    git openssh-server lsb-release gnupg \
+    git openssh-server gnupg \
     $DEV_DEPS $BUILD_DEPS \
   \
   ; mkdir -p /var/run/sshd \
