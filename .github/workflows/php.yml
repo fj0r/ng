@@ -7,7 +7,7 @@ name: build web
 
 on:
   push:
-    branches: [ main ]
+    branches: [ php ]
 
 env:
   REGISTRY: docker.io
@@ -46,23 +46,15 @@ jobs:
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
-      - name: Build
+
+      - name: Build php7
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: nginx
-          file: nginx/Dockerfile
+          context: php
+          file: php/Dockerfile-7
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php7
           labels: ${{ steps.meta.outputs.labels }}
-
-      #- name: Build or
-      #  uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      #  with:
-      #    context: nginx
-      #    file: nginx/Dockerfile-openresty
-      #    push: ${{ github.event_name != 'pull_request' }}
-      #    tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:or
-      #    labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build php7.2
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -73,12 +65,12 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php72
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build php7
+      - name: Build php8
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: php/Dockerfile-7
+          file: php/Dockerfile-8
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php7
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php8
           labels: ${{ steps.meta.outputs.labels }}
 

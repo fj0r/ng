@@ -22,7 +22,7 @@ ENV PHP_PKGS \
 
 RUN set -eux \
   ; xh https://packages.sury.org/php/apt.gpg | apt-key add \
-  ; echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" \
+  ; echo "deb https://packages.sury.org/php/ bullseye main" \
     | tee /etc/apt/sources.list.d/php7.list \
   ; apt-get update \
   ; apt-get install -y --no-install-recommends $PHP_PKGS cron \
