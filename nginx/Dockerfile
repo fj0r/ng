@@ -89,7 +89,7 @@ RUN set -eux \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 COPY services.n /etc/services.d
-COPY config.n /etc/nginx
+COPY config.x /etc/nginx
 COPY nchan /etc/
 #COPY reload-nginx /usr/local/bin
 WORKDIR /srv
