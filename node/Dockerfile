@@ -1,7 +1,7 @@
 FROM fj0rd/ng:latest
 
 RUN set -eux \
-  ; xh -F https://deb.nodesource.com/setup_lts.x | bash -
+  ; xh -F https://deb.nodesource.com/setup_lts.x | bash - \
   ; apt-get update \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
