@@ -90,7 +90,7 @@ RUN set -eux \
 
 COPY services.n /etc/services.d
 COPY config.x /etc/nginx
-COPY nchan /etc/
+COPY nchan /etc/nchan
 #COPY reload-nginx /usr/local/bin
 WORKDIR /srv
 

@@ -68,7 +68,7 @@ RUN set -eux \
 
 VOLUME ["/var/log/nginx"]
 COPY config /etc/nginx
-COPY nchan /etc/
+COPY nchan /etc/nchan
 COPY start.sh /
 
 WORKDIR /srv
