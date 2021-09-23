@@ -32,7 +32,7 @@ RUN set -eux \
   ; ln -sf /usr/sbin/php-fpm${PHP_VERSION} /usr/sbin/php-fpm \
   ; sed -e 's!^.*\(date.timezone =\).*$!\1 Asia/Shanghai!' \
         -e 's!^.*\(track_errors =\).*$!\1 Off!' \
-        #-e 's!^\(error_reporting =.*\)$!\1 \& ~E_WARNING!' \
+        -e 's!^\(error_reporting =.*\)$!\1 \& ~E_NOTICE \& ~E_WARNING!' \
         -i /etc/php/${PHP_VERSION}/fpm/php.ini \
   ; sed -e 's!.*\(daemonize =\).*!\1 no!' \
         -e 's!.*\(error_log =\).*!\1 /var/log/php-fpm/fpm.log!' \
