@@ -3,7 +3,6 @@ FROM fj0rd/io:base
 ARG nginx_repo=nginx/nginx
 ARG nchan_repo=slact/nchan
 ARG s6overlay_repo=just-containers/s6-overlay
-ARG websocat_repo=vi/websocat
 
 ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
@@ -23,16 +22,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    git openssh-server gnupg \
+    git gnupg \
     $DEV_DEPS $BUILD_DEPS \
-  \
-  ; mkdir -p /var/run/sshd \
-  ; sed -i /etc/ssh/sshd_config \
-        -e 's!.*\(AuthorizedKeysFile\).*!\1 /etc/authorized_keys/%u!' \
-        -e 's!.*\(GatewayPorts\).*!\1 yes!' \
-        -e 's!.*\(PasswordAuthentication\).*yes!\1 no!' \
-  ; echo "Match Address 10.0.0.0/8,172.17.0.0/16,192.168.0.0/16\n    PasswordAuthentication yes" \
-        >> /etc/ssh/sshd_config \
   \
   ; git config --global pull.rebase false \
   ; git config --global init.defaultBranch main \
@@ -48,9 +39,6 @@ RUN set -eux \
   \
   ; s6overlay_url=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v sig | grep amd64.tar) \
   ; xh -F ${s6overlay_url} | tar xzvf - -C / \
-  \
-  ; websocat_url=$(xh $github_api/${websocat_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v nossl | grep amd64-linux-static) \
-  ; xh -Fo /usr/local/bin/websocat ${websocat_url} ; chmod +x /usr/local/bin/websocat \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
