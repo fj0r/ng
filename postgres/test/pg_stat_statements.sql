@@ -1,3 +1,4 @@
+create extension if not exists pg_stat_statements;
 SELECT substring(query, 1, 30) AS query
      , calls
      , round(total_exec_time::numeric, 2) AS total_time

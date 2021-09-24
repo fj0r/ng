@@ -2,7 +2,7 @@ CREATE extension plpython3u;
 
 CREATE or REPLACE FUNCTION py_ver() RETURNS setof text as $$
 import sys
-import requests
+import httpx
 import yaml
 import functools
 import more_itertools as mi
@@ -20,10 +20,10 @@ $$ LANGUAGE plpython3u;
 
 SELECT py_ver();
 
--- pg_test requests
+-- pg_test httpx
 CREATE or REPLACE FUNCTION py_requests_get(url TEXT) RETURNS setof text as $$
-import requests
-yield requests.get(url).text
+import httpx
+yield httpx.get(url).text
 $$ LANGUAGE plpython3u;
 
 SELECT py_requests_get('http://www.baidu.com');
