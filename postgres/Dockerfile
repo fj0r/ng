@@ -55,7 +55,8 @@ RUN set -eux \
       ${BUILD_DEPS:-} \
       ${BUILD_CITUS_DEPS:-} \
   ; pip3 --no-cache-dir install \
-      pgcli numpy httpx pyyaml deepmerge cachetools \
+      pgcli pygments \
+      numpy httpx pyyaml deepmerge cachetools \
       pydantic more-itertools fn.py PyParsing \
   \
   #; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
