@@ -49,7 +49,7 @@ jobs:
         with:
           context: postgres
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pg
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pg13
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build pgis
@@ -58,6 +58,6 @@ jobs:
           context: postgres
           file: postgres/Dockerfile-gis
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pgis
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pgis13
           labels: ${{ steps.meta.outputs.labels }}
 

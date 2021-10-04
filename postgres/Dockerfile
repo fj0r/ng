@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM postgres:13
+FROM postgres:14
 
 ENV BUILD_DEPS \
     git \
@@ -45,7 +45,6 @@ RUN set -eux \
       postgresql-${PG_MAJOR}-cron \
       postgresql-${PG_MAJOR}-extra-window-functions \
       postgresql-${PG_MAJOR}-first-last-agg \
-      postgresql-${PG_MAJOR}-hll \
       postgresql-${PG_MAJOR}-ip4r \
       postgresql-${PG_MAJOR}-jsquery \
       postgresql-${PG_MAJOR}-pgaudit \
