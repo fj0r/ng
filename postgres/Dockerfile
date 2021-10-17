@@ -1,8 +1,9 @@
 # vim:set ft=dockerfile:
-FROM postgres:13
+FROM postgres:14
 
 ENV BUILD_DEPS \
     git \
+    openssh-client \
     cmake \
     pkg-config \
     lsb-release \
@@ -117,8 +118,16 @@ RUN set -eux \
   ; cmake .. \
   ; make && make install \
   \
-  ; curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | bash \
-  ; apt-get install -y --no-install-recommends timescaledb-2-postgresql-${PG_MAJOR} \
+  ; cd $build_dir \
+  ; git clone git@github.com:timescale/timescaledb.git \
+  ; cd timescaledb \
+  ; git checkout master \
+  ; ./bootstrap \
+  ; cd build && make \
+  ; make install \
+  #\
+  #; curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | bash \
+  #; apt-get install -y --no-install-recommends timescaledb-2-postgresql-${PG_MAJOR} \
   \
   ; rm -rf $build_dir \
   \
