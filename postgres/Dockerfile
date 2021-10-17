@@ -3,7 +3,6 @@ FROM postgres:14
 
 ENV BUILD_DEPS \
     git \
-    openssh-client \
     cmake \
     pkg-config \
     lsb-release \
@@ -11,7 +10,6 @@ ENV BUILD_DEPS \
     uuid-dev \
     build-essential \
     libpq-dev \
-    libssl-dev \
     python3-dev \
     libkrb5-dev \
     postgresql-server-dev-${PG_MAJOR}
@@ -119,7 +117,7 @@ RUN set -eux \
   ; make && make install \
   \
   ; cd $build_dir \
-  ; git clone git@github.com:timescale/timescaledb.git \
+  ; git clone https://github.com/timescale/timescaledb.git \
   ; cd timescaledb \
   ; git checkout master \
   ; ./bootstrap \
