@@ -41,7 +41,6 @@ RUN set -eux \
       postgresql-${PG_MAJOR}-rum \
       postgresql-${PG_MAJOR}-similarity \
       postgresql-${PG_MAJOR}-rational \
-      postgresql-${PG_MAJOR}-pllua \
       postgresql-${PG_MAJOR}-cron \
       postgresql-${PG_MAJOR}-extra-window-functions \
       postgresql-${PG_MAJOR}-first-last-agg \
@@ -118,8 +117,13 @@ RUN set -eux \
   ; cmake .. \
   ; make && make install \
   \
-  ; curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | bash \
-  ; apt-get install -y --no-install-recommends timescaledb-2-postgresql-${PG_MAJOR} \
+  ; cd $build_dir \
+  ; git clone git@github.com:timescale/timescaledb.git \
+  ; cd timescaledb \
+  ; git checkout master \
+  ; ./bootstrap \
+  ; cd build && make \
+  ; make install \
   \
   ; rm -rf $build_dir \
   \
