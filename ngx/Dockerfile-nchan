@@ -27,7 +27,11 @@ RUN set -eux \
   ; mkdir njs \
   ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
   \
-  ; NGINX_VER=$(xh https://api.github.com/repos/nginx/nginx/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 9-) \
+  ; NCHAN_VER=$(xh https://api.github.com/repos/slact/nchan/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  \
+  #; NGINX_VER=$(xh https://api.github.com/repos/nginx/nginx/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 9-) \
+  ; NGINX_VER=1.19.0 \
   ; xh -F https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
   \
   ; cd nginx-${NGINX_VER} \
@@ -49,6 +53,7 @@ RUN set -eux \
         --with-stream_realip_module \
         --with-stream_ssl_preread_module \
         --add-module=../njs/nginx \
+        --add-dynamic-module=../nchan-${NCHAN_VER} \
         --http-log-path=/var/log/nginx/access.log \
         --error-log-path=/var/log/nginx/error.log \
   ; make \
@@ -64,6 +69,7 @@ RUN set -eux \
 
 VOLUME ["/var/log/nginx"]
 COPY config /etc/nginx
+COPY nchan /etc/
 COPY start.sh /
 
 WORKDIR /srv

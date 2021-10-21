@@ -1,7 +1,6 @@
 FROM fj0rd/io:base
 
 ARG nginx_repo=nginx/nginx
-ARG nchan_repo=slact/nchan
 ARG s6overlay_repo=just-containers/s6-overlay
 
 ARG github_header="Accept:application/vnd.github.v3+json"
@@ -48,10 +47,6 @@ RUN set -eux \
   ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
   \
   ; cd $build_dir \
-  ; NCHAN_VER=$(xh $github_api/${nchan_repo}/tags $github_header | jq -r '.[0].name' | cut -c 2-) \
-  ; xh -F https://github.com/${nchan_repo}/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
-  \
-  ; cd $build_dir \
   ; NGINX_VER=$(xh $github_api/${nginx_repo}/tags $github_header | jq -r '.[0].name' | cut -c 9-) \
   ; xh -F https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
   \
@@ -74,7 +69,6 @@ RUN set -eux \
         --with-stream_realip_module \
         --with-stream_ssl_preread_module \
         --add-module=../njs/nginx \
-        --add-dynamic-module=../nchan-${NCHAN_VER} \
   ; make \
   ; make install \
   \
@@ -90,7 +84,6 @@ RUN set -eux \
 
 COPY services.n /etc/services.d
 COPY config.x /etc/nginx
-COPY nchan /etc/nchan
 #COPY reload-nginx /usr/local/bin
 WORKDIR /srv
 
