@@ -103,14 +103,6 @@ RUN set -eux \
   #; curl -sSL https://github.com/postgrespro/zson/archive/refs/tags/v${zson_version}.tar.gz | tar zxf - \
   #; cd zson-${zson_version} \
   #; make && make install \
-  #\
-  #### via apt
-  # ; cd $build_dir \
-  # ; rum_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/postgrespro/rum/releases | jq -r '.[0].tag_name') \
-  # ; curl -sSL https://github.com/postgrespro/rum/archive/${rum_version}.tar.gz | tar zxf - \
-  # ; cd rum-${rum_version} \
-  # ; make USE_PGXS=1 \
-  # ; make USE_PGXS=1 install \
   \
   #; cd $build_dir \
   #; git clone https://github.com/adjust/clickhouse_fdw.git \
@@ -132,6 +124,14 @@ RUN set -eux \
   \
   ; rm -rf $build_dir \
   \
+  ; mkdir -p /opt/helix \
+  ; helix_url=$(curl -sSL https://api.github.com/repos/helix-editor/helix/releases -H "Accept: application/vnd.github.v3+json" \
+      | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
+  ; curl -sSL ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
+  ; ln -sf /opt/helix/hx /usr/local/bin/h \
+  ; mkdir -p /etc/skel/.config/helix && ln -sf /etc/skel/.config /root \
+  ; curl -sSL https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > /etc/skel/.config/helix/config.toml \
+  \
   ; apt-get purge -y --auto-remove ${BUILD_DEPS:-} ${BUILD_CITUS_DEPS:-}\
   ; apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
@@ -152,4 +152,3 @@ ENV PGCONF_RANDOM_PAGE_COST=1.1
 ENV PGCONF_WAL_LEVEL=logical
 ENV PGCONF_MAX_REPLICATION_SLOTS=10
 ENV PGCONF_SHARED_PRELOAD_LIBRARIES="'citus,pg_stat_statements,timescaledb,pg_jieba.so'"
-
