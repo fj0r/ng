@@ -17,5 +17,5 @@ RUN set -eux \
   ; xh -F https://download.eclipse.org/jdtls/snapshots/${jdtls_latest} \
     | tar --no-same-owner -zxf - -C /opt/language-server/jdtls \
   \
-  ; npm cache clean -f
+  ; echo 'done'
 
