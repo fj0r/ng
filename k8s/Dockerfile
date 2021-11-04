@@ -10,8 +10,6 @@ RUN set -eux \
   ; export DEBIAN_FRONTEND=noninteractive \
   ; apt-get install -y --no-install-recommends \
       curl gnupg ca-certificates \
-  ; echo 'deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_Testing/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
-  ; curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_Testing/Release.key | sudo apt-key add - \
   ; apt-get update -qq \
   ; apt-get install -y --no-install-recommends \
       skopeo buildah podman \
