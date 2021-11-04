@@ -15,14 +15,14 @@ ENV BUILD_DEPS \
     libkrb5-dev \
     postgresql-server-dev-${PG_MAJOR}
 
-ENV BUILD_CITUS_DEPS \
-    libicu-dev \
-    liblz4-dev \
-    libpam0g-dev \
-    libreadline-dev \
-    libselinux1-dev \
-    libxslt-dev \
-    libzstd-dev
+#ENV BUILD_CITUS_DEPS \
+#    libicu-dev \
+#    liblz4-dev \
+#    libpam0g-dev \
+#    libreadline-dev \
+#    libselinux1-dev \
+#    libxslt-dev \
+#    libzstd-dev
 
 #ENV LANG zh_CN.utf8
 ENV TIMEZONE=Asia/Shanghai
@@ -53,14 +53,14 @@ RUN set -eux \
       libcurl4 curl jq ca-certificates \
       uuid mariadb-client \
       ${BUILD_DEPS:-} \
-      ${BUILD_CITUS_DEPS:-} \
+      #${BUILD_CITUS_DEPS:-} \
   ; pip3 --no-cache-dir install \
       pgcli pygments \
       numpy httpx pyyaml deepmerge cachetools \
       pydantic more-itertools fn.py PyParsing \
   \
-  #; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
-  #; apt-get install -y --no-install-recommends postgresql-13-citus-10.0 \
+  ; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
+  ; apt-get install -y --no-install-recommends postgresql-14-citus-10.2 \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
@@ -82,13 +82,13 @@ RUN set -eux \
   ; cd pgsql-http-${http_version} \
   ; make && make install \
   \
-  ; cd $build_dir \
-  ; citus_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/citusdata/citus/releases | jq -r '.[0].tag_name' | cut -c 2-) \
-  ; curl -sSL https://github.com/citusdata/citus/archive/refs/tags/v${citus_version}.tar.gz | tar zxf - \
-  ; cd citus-${citus_version} \
-  ; ./configure \
-  ; make && make install \
-  \
+  #; cd $build_dir \
+  #; citus_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/citusdata/citus/releases | jq -r '.[0].tag_name' | cut -c 2-) \
+  #; curl -sSL https://github.com/citusdata/citus/archive/refs/tags/v${citus_version}.tar.gz | tar zxf - \
+  #; cd citus-${citus_version} \
+  #; ./configure \
+  #; make && make install \
+  #\
   #; cd $build_dir \
   #; anonymizer_version=$(curl -sSL "https://gitlab.com/api/v4/projects/7709206/releases" | jq -r '.[0].name') \
   #; curl -sSL https://gitlab.com/dalibo/postgresql_anonymizer/-/archive/${anonymizer_version}/postgresql_anonymizer-${anonymizer_version}.tar.gz \
@@ -132,7 +132,8 @@ RUN set -eux \
   ; mkdir -p /etc/skel/.config/helix && ln -sf /etc/skel/.config /root \
   ; curl -sSL https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > /etc/skel/.config/helix/config.toml \
   \
-  ; apt-get purge -y --auto-remove ${BUILD_DEPS:-} ${BUILD_CITUS_DEPS:-}\
+  ; apt-get purge -y --auto-remove ${BUILD_DEPS:-} \
+  #    ${BUILD_CITUS_DEPS:-} \
   ; apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 
