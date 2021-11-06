@@ -1,4 +1,3 @@
-# vim:set ft=dockerfile:
 FROM postgres:14
 
 ENV BUILD_DEPS \
@@ -60,7 +59,8 @@ RUN set -eux \
       pydantic more-itertools fn.py PyParsing \
   \
   ; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
-  ; apt-get install -y --no-install-recommends postgresql-14-citus-10.2 \
+  ; citus_pkg=$(apt search postgresql-${PG_MAJOR}-citus | awk -F'/' 'NR==3 {print $1}') \
+  ; apt-get install -y --no-install-recommends ${citus_pkg} \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
