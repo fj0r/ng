@@ -310,6 +310,15 @@ pg_setup_conf() {
 	echo "pg_stat_statements.track = all" >> $PGDATA/usr.conf
 }
 
+initialize_password() {
+    if [ -z "$POSTGRES_PASSWORD" ]; then
+        export POSTGRES_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 19)
+        echo
+        echo "export \$POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+        echo
+    fi
+}
+
 _main() {
 	# if first arg looks like a flag, assume we want to run postgres server
 	if [ "${1:0:1}" = '-' ]; then
@@ -327,6 +336,8 @@ _main() {
 
 		# only run initialization on an empty data directory
 		if [ -z "$DATABASE_ALREADY_EXISTS" ]; then
+		    initialize_password
+
 			docker_verify_minimum_env
 
 			# check dir permissions to reduce likelihood of half-initialized database
@@ -364,3 +375,4 @@ _main() {
 if ! _is_sourced; then
 	_main "$@"
 fi
+
