@@ -76,7 +76,6 @@ RUN set -eux \
   ; ln -fs /opt/nginx/conf /etc/nginx \
   ; mkdir -p /etc/nginx/conf.d \
   ; echo 'shopt -s cdable_vars' >> /root/.bashrc \
-  ; echo 'export or=/etc/nginx' >> /root/.bashrc \
   ; echo 'export logs=/opt/nginx/logs' >> /root/.bashrc \
   \
   ; apt-get -y remove ${BUILD_DEPS} \
@@ -92,6 +91,5 @@ EXPOSE 80 443
 
 ENTRYPOINT [ "/init" ]
 
-ENV WEB_SERVERNAME=
 ENV WEB_ROOT=
-ENV WS_FIXED=
+ENV TUNNEL_FIXED=
