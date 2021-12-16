@@ -12,7 +12,7 @@ ENV DEV_DEPS \
         libpcre3-dev libssl-dev \
         zlib1g-dev
 
-ENV BUILD_DEPS lsb-release software-properties-common build-essential
+ENV BUILD_DEPS lsb-release software-properties-common build-essential git gnupg
 
 ENV PATH=/opt/nginx/sbin:$PATH
 
@@ -21,7 +21,6 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    git gnupg \
     $DEV_DEPS $BUILD_DEPS \
   \
   ; git config --global pull.rebase false \
