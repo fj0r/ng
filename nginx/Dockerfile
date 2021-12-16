@@ -87,8 +87,8 @@ RUN set -eux \
   ; apt-get -y remove ${BUILD_DEPS} \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-COPY services.n /etc/services.d
-COPY config.x /etc/nginx
+COPY services /etc/services.d
+COPY config /etc/nginx
 #COPY reload-nginx /usr/local/bin
 WORKDIR /srv
 
