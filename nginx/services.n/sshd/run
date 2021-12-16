@@ -12,6 +12,7 @@ print_fingerprints() {
     done
 }
 
+
 if ls /etc/ssh/ssh_host_* 1> /dev/null 2>&1; then
     echo ">> Host keys exist in default location"
     # Don't do anything
@@ -21,5 +22,36 @@ else
     ssh-keygen -A
     print_fingerprints /etc/ssh
 fi
+
+
+mkdir -p /etc/ssh/authorized_keys
+for i in "${!ed25519_@}"; do
+    _AU=${i:8}
+    eval "echo \"ssh-ed25519 \$$i\" >> /etc/ssh/authorized_keys/${_AU}"
+done
+
+
+# Fix permissions, if writable
+if [ -w ~/.ssh ]; then
+    chown root:root ~/.ssh && chmod 700 ~/.ssh/
+fi
+if [ -w ~/.ssh/authorized_keys ]; then
+    chown root:root ~/.ssh/authorized_keys
+    chmod 600 ~/.ssh/authorized_keys
+fi
+if [ -w /etc/ssh/authorized_keys ]; then
+    chown root:root /etc/ssh/authorized_keys
+    chmod 700 /etc/ssh/authorized_keys
+    find /etc/ssh/authorized_keys/ -type f -exec chmod 600 {} \;
+fi
+
+
+# Lock root account, if Disabled
+if [[ "${SSH_DISABLE_ROOT}" == "true" ]]; then
+    echo "WARNING: root account is now locked. Unset SSH_DISABLE_ROOT to unlock the account."
+else
+    usermod -p '' root
+fi
+
 
 exec /usr/sbin/sshd -D -e 2>&1
