@@ -1,6 +1,6 @@
 const fs = require('fs').promises
 
-function bin(r) {
+function run(r) {
     var f = METHODS[r.variables[1]]
     f ? f(r) : r.return(200, JSON.stringify({avaiables: Object.keys(METHODS)}))
 }
@@ -18,38 +18,4 @@ const METHODS = {
     v       : r => r.return(200, JSON.stringify(r.variables[r.args.v])),
 }
 
-
-function check_scheme(url) {
-  if (url.startsWith('http')) {
-    return url
-  } else {
-    return `http://${url}`
-  }
-}
-
-function get_host(url) {
-  if (url.startsWith('http')) {
-    return url.split(':')[1].slice(2)
-  } else {
-    return url.split(':')[0]
-  }
-}
-
-function _env(n) {
-  return process.env[`UPSTREAM_${n.toUpperCase()}`]
-}
-
-//////////////////////// {{{
-
-function u_test(r) {
-  return check_scheme(_env('test'))
-}
-
-function h_test(r) {
-  return get_host(_env('test'))
-}
-
-export default { bin
-               , u_test
-               , h_test
-               }
+export default { run }
