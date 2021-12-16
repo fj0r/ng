@@ -1,7 +1,7 @@
 const fs = require('fs').promises
 
 function run(r) {
-    var f = METHODS[r.variables[1]]
+    var f = METHODS[r.variables.op]
     f ? f(r) : r.return(200, JSON.stringify({avaiables: Object.keys(METHODS)}))
 }
 

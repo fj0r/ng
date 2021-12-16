@@ -41,6 +41,7 @@ RUN set -eux \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
   \
+  ; cd $build_dir \
   ; NCHAN_VER=$(xh https://api.github.com/repos/slact/nchan/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 2-) \
   ; xh -F https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
   \
