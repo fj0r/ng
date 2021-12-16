@@ -41,6 +41,9 @@ RUN set -eux \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
   \
+  ; NCHAN_VER=$(xh https://api.github.com/repos/slact/nchan/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 2-) \
+  ; xh -F https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  \
   ; cd $build_dir \
   ; mkdir njs \
   ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
@@ -68,6 +71,9 @@ RUN set -eux \
         --with-stream_realip_module \
         --with-stream_ssl_preread_module \
         --add-module=../njs/nginx \
+        --add-dynamic-module=../nchan-${NCHAN_VER} \
+        --http-log-path=/var/log/nginx/access.log \
+        --error-log-path=/var/log/nginx/error.log \
   ; make \
   ; make install \
   \
