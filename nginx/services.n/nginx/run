@@ -5,7 +5,7 @@ if [ ! -z $WEB_ROOT ]; then
 fi
 
 if [ -z $TUNNEL_FIXED ]; then
-    export tunnel_token=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
+    tunnel_token=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
     echo "${tunnel_token}" > /.tunnel-token
     echo "tunnel url is \`/tunnel-${tunnel_token}\`"
     sed -i 's!\(tunnel\).*{$!\1'"-$tunnel_token"' {!' /etc/nginx/nginx.conf

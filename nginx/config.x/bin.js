@@ -7,7 +7,7 @@ function run(r) {
 
 const METHODS = {
     headers : r => r.return(200, JSON.stringify(r.headersIn)),
-    ip      : r => r.return(200, r.headersIn['X-Real-IP']),
+    ip      : r => r.return(200, r.headersIn['X-Real-IP'] || r.remoteAddress),
     rdr     : r => r.return(301, r.args.url),
     ua      : r => r.return(200, r.headersIn['User-Agent']),
     body    : r => r.return(200, r.requestBuffer),
