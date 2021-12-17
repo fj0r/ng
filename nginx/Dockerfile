@@ -42,8 +42,9 @@ RUN set -eux \
   ; mkdir -p $build_dir \
   \
   ; cd $build_dir \
-  ; NCHAN_VER=$(xh https://api.github.com/repos/slact/nchan/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 2-) \
-  ; xh -F https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; git clone https://github.com/slact/nchan.git \
+  #; NCHAN_VER=$(xh https://api.github.com/repos/slact/nchan/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 2-) \
+  #; xh -F https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
   \
   ; cd $build_dir \
   ; mkdir njs \
@@ -72,7 +73,8 @@ RUN set -eux \
         --with-stream_realip_module \
         --with-stream_ssl_preread_module \
         --add-module=../njs/nginx \
-        --add-dynamic-module=../nchan-${NCHAN_VER} \
+        --add-dynamic-module=../nchan \
+        #--add-dynamic-module=../nchan-${NCHAN_VER} \
         --http-log-path=/var/log/nginx/access.log \
         --error-log-path=/var/log/nginx/error.log \
   ; make \
