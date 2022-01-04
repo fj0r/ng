@@ -124,6 +124,11 @@ RUN set -eux \
   \
   ; rm -rf $build_dir \
   \
+  ; mkdir -p /opt/pg_flame \
+  ; pg_flame_url=$(curl -sSL https://api.github.com/repos/fj0r/pg_flame/releases -H "Accept: application/vnd.github.v3+json" \
+      | jq -r '.[0].assets[].browser_download_url' | grep pg_flame.tar.gz) \
+  ; curl -sSL ${pg_flame_url} | tar zxf - -C /opt/pg_flame \
+  \
   ; mkdir -p /opt/helix \
   ; helix_url=$(curl -sSL https://api.github.com/repos/helix-editor/helix/releases -H "Accept: application/vnd.github.v3+json" \
       | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
