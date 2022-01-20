@@ -4,7 +4,7 @@ if [ ! -z $UPLOAD_MAX_FILESIZE ]; then
     echo "-- \$UPLOAD_MAX_FILESIZE been set to $UPLOAD_MAX_FILESIZE(MB)"
     sed -i 's!\(upload_max_filesize =\).*!\1 '"$UPLOAD_MAX_FILESIZE"'M!g' /etc/php/*/fpm/php.ini
     sed -i 's!\(post_max_size =\).*!\1 '"$(($UPLOAD_MAX_FILESIZE * 4))"'M!g' /etc/php/*/fpm/php.ini
-    sed -i '/charset.*$/a client_max_body_size '"$UPLOAD_MAX_FILESIZE"'m;' /etc/nginx/nginx.conf
+    sed -i 's!\(client_max_body_size \).*!\1 '"$UPLOAD_MAX_FILESIZE"'m;!g' /etc/nginx/nginx.conf
 fi
 
 if [ ! -z $PHP_FPM_SERVERS ]; then
