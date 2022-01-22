@@ -35,8 +35,8 @@ RUN set -eux \
   ; mkdir -p ~/.config/helix \
   ; xh -F https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
   \
-  ; s6overlay_url=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v sig | grep amd64.tar) \
-  ; xh -F ${s6overlay_url} | tar xzvf - -C / \
+  ; s6overlay_url=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v sha256 | grep -E 'x86_64|s6-overlay-noarch') \
+  ; for url in ${s6overlay_url}; do xh -F ${url} | tar xJvf - -C /; done \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
