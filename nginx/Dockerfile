@@ -1,7 +1,6 @@
 FROM fj0rd/io:base
 
 ARG nginx_repo=nginx/nginx
-ARG s6overlay_repo=just-containers/s6-overlay
 
 ARG github_header="Accept:application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
@@ -34,9 +33,6 @@ RUN set -eux \
   ; ln -sf /opt/helix/hx /usr/local/bin/h \
   ; mkdir -p ~/.config/helix \
   ; xh -F https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
-  \
-  ; s6overlay_url=$(xh $github_api/${s6overlay_repo}/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep -v sha256 | grep -E 'x86_64|s6-overlay-noarch') \
-  ; for url in ${s6overlay_url}; do xh -F ${url} | tar xJvf - -C /; done \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
@@ -87,7 +83,7 @@ RUN set -eux \
   ; apt-get -y remove ${BUILD_DEPS} \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-COPY services /etc/services.d
+COPY entrypoint.sh /entrypoint.sh
 COPY config /etc/nginx
 #COPY reload-nginx /usr/local/bin
 WORKDIR /srv
@@ -95,7 +91,7 @@ WORKDIR /srv
 VOLUME [ "/srv" ]
 EXPOSE 80 443
 
-ENTRYPOINT [ "/init" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
 
 ENV WEB_ROOT=
 ENV TUNNEL_FIXED=

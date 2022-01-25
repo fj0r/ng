@@ -20,4 +20,4 @@ done
 /usr/sbin/sshd -D -e &
 sshd=$!
 
-wait $ngx $sshd
+wait -n $ngx $sshd
