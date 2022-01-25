@@ -98,6 +98,12 @@ RUN set -eux \
   ; cd zson-${zson_version} \
   ; make && make install \
   \
+  ; cd $build_dir \
+  ; mkdir pg_hint_plan \
+  ; curl -sSL https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL14_1_4_0.tar.gz | tar zxf - -C pg_hint_plan --strip-components=1 \
+  ; cd pg_hint_plan \
+  ; make && make install \
+  \
   #; cd $build_dir \
   #; git clone https://github.com/adjust/clickhouse_fdw.git \
   #; cd clickhouse_fdw \

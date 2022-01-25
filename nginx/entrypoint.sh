@@ -104,7 +104,7 @@ env | grep -E '_|HOME|ROOT|PATH|VERSION|LANG|TIME|MODULE|BUFFERED' \
     | grep -Ev '^(_|HOME|USER)=' \
    >> /etc/environment
 
-trap stop SIGINT SIGTERM
+trap stop SIGINT SIGTERM #ERR EXIT
 init_ssh
 /usr/sbin/sshd -D -e 2>&1 &
 echo -n "$! " >> /var/run/services
