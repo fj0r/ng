@@ -3,7 +3,7 @@
 set -e
 
 ################################################################################
-echo "starting sshd"
+echo "[$(date -Is)] starting sshd"
 ################################################################################
 if [[ "$DEBUG" == 'true' ]]; then
     set -x
@@ -31,7 +31,7 @@ set_user () {
     _GID=${UA[2]:-1000}
 
     getent group ${_NAME} >/dev/null 2>&1 || groupadd -g ${_GID} ${_NAME}
-    getent passwd ${_NAME} >/dev/null 2>&1 || useradd -m -u ${_UID} -g ${_GID} -G sudo -s /bin/zsh -c "$2" ${_NAME}
+    getent passwd ${_NAME} >/dev/null 2>&1 || useradd -m -u ${_UID} -g ${_GID} -G sudo -s /bin/bash -c "$2" ${_NAME}
 }
 
 init_ssh () {
@@ -96,6 +96,7 @@ stop() {
     # Wait for exit
     wait ${pid}
     # All done.
+    echo -n '' > /var/run/services
     echo "Done."
 }
 
@@ -109,7 +110,7 @@ init_ssh
 echo -n "$! " >> /var/run/services
 
 ################################################################################
-echo "starting nginx"
+echo "[$(date -Is)] starting nginx"
 ################################################################################
 if [ ! -z $WEB_ROOT ]; then
     sed -i 's!\(set $root\).*$!\1 '"\'$WEB_ROOT\'"';!' /etc/nginx/nginx.conf
@@ -128,7 +129,7 @@ sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
 echo -n "$! " >> /var/run/services
 
 ################################################################################
-echo "starting php-fpm"
+echo "[$(date -Is)] starting php-fpm"
 ################################################################################
 if [ -f /setup-php ]; then
   bash /setup-php
