@@ -1,10 +1,5 @@
 FROM fj0rd/io:base
 
-ARG nginx_repo=nginx/nginx
-
-ARG github_header="Accept:application/vnd.github.v3+json"
-ARG github_api=https://api.github.com/repos
-
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
 ENV DEV_DEPS \
         apache2-utils \
@@ -28,7 +23,7 @@ RUN set -eux \
   ; git config --global user.email "unnamed@container" \
   \
   ; mkdir -p /opt/helix \
-  ; helix_url=$(xh $github_api/helix-editor/helix/releases $github_header | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
+  ; helix_url=$(xh https://api.github.com/repos/helix-editor/helix/releases Accept:application/vnd.github.v3+json | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
   ; xh -F ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
   ; ln -sf /opt/helix/hx /usr/local/bin/h \
   ; mkdir -p ~/.config/helix \
@@ -46,7 +41,7 @@ RUN set -eux \
   ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
   \
   ; cd $build_dir \
-  ; NGINX_VER=$(xh $github_api/${nginx_repo}/tags $github_header | jq -r '.[0].name' | cut -c 9-) \
+  ; NGINX_VER=$(xh https://api.github.com/repos/nginx/nginx/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 9-) \
   ; xh -F https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
   \
   ; cd nginx-${NGINX_VER} \
