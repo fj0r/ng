@@ -25,10 +25,10 @@ RUN set -eux \
   ; mkdir /tmp/build && cd /tmp/build \
   \
   ; mkdir njs \
-  ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
+  ; curl -sSL http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
   \
-  ; NGINX_VER=$(xh https://api.github.com/repos/nginx/nginx/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 9-) \
-  ; xh -F https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
+  ; NGINX_VER=$(curl -sSL https://api.github.com/repos/nginx/nginx/tags -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].name' | cut -c 9-) \
+  ; curl -sSL https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
   \
   ; cd nginx-${NGINX_VER} \
   ; ./configure --prefix=/opt/nginx \

@@ -23,26 +23,26 @@ RUN set -eux \
   ; git config --global user.email "unnamed@container" \
   \
   ; mkdir -p /opt/helix \
-  ; helix_url=$(xh https://api.github.com/repos/helix-editor/helix/releases Accept:application/vnd.github.v3+json | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
-  ; xh -F ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
+  ; helix_url=$(curl -sSL https://api.github.com/repos/helix-editor/helix/releases -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
+  ; curl -sSL ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
   ; ln -sf /opt/helix/hx /usr/local/bin/h \
   ; mkdir -p ~/.config/helix \
-  ; xh -F https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
+  ; curl -sSL https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
   \
   ; cd $build_dir \
-  ; NCHAN_VER=$(xh https://api.github.com/repos/slact/nchan/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 2-) \
-  ; xh -F https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; NCHAN_VER=$(curl -sSL https://api.github.com/repos/slact/nchan/tags -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].name' | cut -c 2-) \
+  ; curl -sSL https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
   \
   ; cd $build_dir \
   ; mkdir njs \
-  ; xh -F http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
+  ; curl -sSL http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-component=1 -C njs \
   \
   ; cd $build_dir \
-  ; NGINX_VER=$(xh https://api.github.com/repos/nginx/nginx/tags Accept:application/vnd.github.v3+json | jq -r '.[0].name' | cut -c 9-) \
-  ; xh -F https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
+  ; NGINX_VER=$(curl -sSL https://api.github.com/repos/nginx/nginx/tags -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].name' | cut -c 9-) \
+  ; curl -sSL https://nginx.org/download/nginx-${NGINX_VER}.tar.gz | tar -zxf - \
   \
   ; cd nginx-${NGINX_VER} \
   ; ./configure --prefix=/opt/nginx \

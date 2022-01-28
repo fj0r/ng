@@ -49,7 +49,7 @@ COPY setup-php /setup-php
 COPY entrypoint.sh /entrypoint.sh
 
 RUN set -ex \
-  ; xh -F https://getcomposer.org/installer \
+  ; curl -sSL https://getcomposer.org/installer \
     | php -- --install-dir=/usr/local/bin --filename=composer
 
 ENV PHP_DEBUG=
