@@ -92,12 +92,12 @@ RUN set -eux \
   #; make install \
   #\
   \
-  ; cd $build_dir \
-  ; zson_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/postgrespro/zson/releases | jq -r '.[0].tag_name' | cut -c 2-) \
-  ; curl -sSL https://github.com/postgrespro/zson/archive/refs/tags/v${zson_version}.tar.gz | tar zxf - \
-  ; cd zson-${zson_version} \
-  ; make && make install \
-  \
+  #; cd $build_dir \
+  #; zson_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/postgrespro/zson/releases | jq -r '.[0].tag_name' | cut -c 2-) \
+  #; curl -sSL https://github.com/postgrespro/zson/archive/refs/tags/v${zson_version}.tar.gz | tar zxf - \
+  #; cd zson-${zson_version} \
+  #; make && make install \
+  #\
   ; cd $build_dir \
   ; mkdir pg_hint_plan \
   ; curl -sSL https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL14_1_4_0.tar.gz | tar zxf - -C pg_hint_plan --strip-components=1 \
