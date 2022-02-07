@@ -9,7 +9,7 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; export DEBIAN_FRONTEND=noninteractive \
   ; apt-get install -y --no-install-recommends \
-      curl gnupg ca-certificates \
+      gnupg \
   ; apt-get update -qq \
   ; apt-get install -y --no-install-recommends \
       skopeo buildah podman \
