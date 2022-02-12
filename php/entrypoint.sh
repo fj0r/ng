@@ -116,14 +116,9 @@ if [ ! -z $WEB_ROOT ]; then
     sed -i 's!\(set $root\).*$!\1 '"\'$WEB_ROOT\'"';!' /etc/nginx/nginx.conf
 fi
 
-if [ -z $TUNNEL_FIXED ]; then
-    tunnel_token=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
-    echo "${tunnel_token}" > /.tunnel-token
-    echo "tunnel url is \`/tunnel-${tunnel_token}\`"
-    sed -i 's!\(tunnel\).*{$!\1'"-$tunnel_token"' {!' /etc/nginx/nginx.conf
+if grep -q '$ngx_resolver' /etc/nginx/nginx.conf; then
+    sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
 fi
-
-sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
 
 /opt/nginx/sbin/nginx 2>&1 &
 echo -n "$! " >> /var/run/services
