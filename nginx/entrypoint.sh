@@ -9,6 +9,10 @@ if [[ "$DEBUG" == 'true' ]]; then
     set -x
 fi
 
+if [ ! -z $STARTUP_SCRIPT ]; then
+  bash $STARTUP_SCRIPT
+fi
+
 # Add users if $1=user:uid:gid set
 set_user () {
     IFS=':' read -ra UA <<< "$1"

@@ -9,6 +9,10 @@ if [[ "$DEBUG" == 'true' ]]; then
     set -x
 fi
 
+if [ ! -z $STARTUP_SCRIPT ]; then
+  bash $STARTUP_SCRIPT
+fi
+
 # Add users if $1=user:uid:gid set
 set_user () {
     IFS=':' read -ra UA <<< "$1"
@@ -89,10 +93,6 @@ echo "[$(date -Is)] starting php-fpm"
 if [ -f /setup-php ]; then
   bash /setup-php
   mv /setup-php /setup-php.$(date -Is)
-fi
-
-if [ ! -z $STARTUP_SCRIPT ]; then
-  bash $STARTUP_SCRIPT
 fi
 
 /usr/sbin/php-fpm 2>&1 &

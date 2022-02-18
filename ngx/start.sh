@@ -1,4 +1,8 @@
 #!/bin/sh
+if [ ! -z $STARTUP_SCRIPT ]; then
+  bash $STARTUP_SCRIPT
+fi
+
 sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
 
 stop () {
