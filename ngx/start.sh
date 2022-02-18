@@ -9,6 +9,16 @@ trap stop SIGINT SIGTERM SIGQUIT
 nginx &
 ngx=$!
 
+#############################################
+set_user () {
+    IFS=':' read -ra UA <<< "$1"
+    _NAME=${UA[0]}
+    _UID=${UA[1]:-1000}
+    _GID=${UA[2]:-1000}
+
+    getent group ${_NAME} >/dev/null 2>&1 || groupadd -g ${_GID} ${_NAME}
+    getent passwd ${_NAME} >/dev/null 2>&1 || useradd -m -u ${_UID} -g ${_GID} -G sudo -s /bin/zsh -c "$2" ${_NAME}
+}
 
 init_ssh () {
     if [ -n "$user" ]; then
@@ -40,4 +50,5 @@ init_ssh
 /usr/bin/dropbear -REFms -p 22 &
 sshd=$!
 
+#############################################
 wait -n $ngx $sshd
