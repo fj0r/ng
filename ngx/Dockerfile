@@ -1,4 +1,7 @@
+FROM fj0rd/0x:dropbear-alpine
+
 FROM alpine:3
+COPY --from=dropbear /target/server /usr
 
 ARG BUILD_DEPS="\
     jq \
@@ -12,11 +15,13 @@ ENV TIMEZONE=Asia/Shanghai
 
 RUN set -eux \
   ; apk --update add --no-cache \
-    tzdata \
+    tzdata libcrypto3 \
     openssl-dev pcre-dev zlib-dev \
     ${BUILD_DEPS} \
   ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
   ; echo "$TIMEZONE" > /etc/timezone \
+  \
+  ; mkdir /etc/dropbear \
   \
   ; xh_ver=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ducaale/xh/releases | jq -r '.[0].tag_name') \
   ; curl -sSL https://github.com/ducaale/xh/releases/download/${xh_ver}/xh-${xh_ver}-x86_64-unknown-linux-musl.tar.gz \
