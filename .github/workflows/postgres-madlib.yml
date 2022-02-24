@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: postgres
-          file: postgres/Dockerfile-madlib
+          file: postgres/madlib.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pg-madlib
           labels: ${{ steps.meta.outputs.labels }}

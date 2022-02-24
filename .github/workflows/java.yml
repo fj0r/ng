@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: java
-          file: java/Dockerfile-jdk-11
+          file: java/jdk-11.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:java11
           labels: ${{ steps.meta.outputs.labels }}
@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: java
-          file: java/Dockerfile-es
+          file: java/es.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:es
           labels: ${{ steps.meta.outputs.labels }}
@@ -66,7 +66,7 @@ jobs:
       #  uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
       #  with:
       #    context: java
-      #    file: java/Dockerfile-polynote
+      #    file: java/polynote.Dockerfile
       #    push: ${{ github.event_name != 'pull_request' }}
       #    tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:polynote
       #    labels: ${{ steps.meta.outputs.labels }}

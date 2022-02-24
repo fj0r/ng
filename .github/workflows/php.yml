@@ -51,7 +51,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: php/Dockerfile-7
+          file: php/7.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php7
           labels: ${{ steps.meta.outputs.labels }}
@@ -60,7 +60,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: php/Dockerfile-7.2
+          file: php/7.2.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php72
           labels: ${{ steps.meta.outputs.labels }}
@@ -69,7 +69,7 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: php
-          file: php/Dockerfile-8
+          file: php/8.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:php8
           labels: ${{ steps.meta.outputs.labels }}
