@@ -70,7 +70,7 @@ env | grep -E '_|HOME|ROOT|PATH|DIR|VERSION|LANG|TIME|MODULE|BUFFERED' \
 
 trap stop SIGINT SIGTERM #ERR EXIT
 init_ssh
-/usr/bin/dropbear -REFms -p 22 &
+/usr/bin/dropbear -REFms -p 22 2>&1 &
 echo -n "$! " >> /var/run/services
 
 ################################################################################
