@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 if [ ! -z $STARTUP_SCRIPT ]; then
   bash $STARTUP_SCRIPT
 fi
@@ -10,27 +10,11 @@ stop () {
 }
 
 trap stop SIGINT SIGTERM SIGQUIT
+
 nginx &
-ngx=$!
-
-#############################################
-set_user () {
-    IFS=':' read -ra UA <<< "$1"
-    _NAME=${UA[0]}
-    _UID=${UA[1]:-1000}
-    _GID=${UA[2]:-1000}
-
-    getent group ${_NAME} >/dev/null 2>&1 || groupadd -g ${_GID} ${_NAME}
-    getent passwd ${_NAME} >/dev/null 2>&1 || useradd -m -u ${_UID} -g ${_GID} -G sudo -s /bin/zsh -c "$2" ${_NAME}
-}
+ngx="$!"
 
 init_ssh () {
-    if [ -n "$user" ]; then
-        for u in $(echo $user | tr "," "\n"); do
-            set_user ${u} 'SSH User'
-        done
-    fi
-
     for i in "${!ed25519_@}"; do
         _AU=${i:8}
         _HOME_DIR=$(getent passwd ${_AU} | cut -d: -f6)
@@ -51,8 +35,10 @@ init_ssh () {
 }
 
 init_ssh
-/usr/bin/dropbear -REFms -p 22 2>&1 &
-sshd=$!
+/usr/bin/dropbear -REFms -p 22 &
+sshd="$!"
+
+
 
 #############################################
-wait -n $ngx $sshd
+wait -n $ngx $sshd && exit $?

@@ -15,7 +15,7 @@ ENV TIMEZONE=Asia/Shanghai
 
 RUN set -eux \
   ; apk --update add --no-cache \
-    tzdata libcrypto3 \
+    tzdata libcrypto3 bash \
     openssl-dev pcre-dev zlib-dev \
     ${BUILD_DEPS} \
   ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
