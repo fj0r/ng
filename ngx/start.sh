@@ -34,9 +34,13 @@ init_ssh () {
     fi
 }
 
-init_ssh
-/usr/bin/dropbear -REFms -p 22 &
-sshd="$!"
+__ssh=$(for i in "${!ed25519_@}"; do echo $i; done)
+if [ ! -z "$__ssh" ]; then
+    echo "[$(date -Is)] starting ssh"
+    init_ssh
+    /usr/bin/dropbear -REFms -p 22 2>&1 &
+    sshd="$!"
+fi
 
 
 
