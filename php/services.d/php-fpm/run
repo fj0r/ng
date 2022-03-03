@@ -5,7 +5,7 @@ if [ -f /setup-php ]; then
   mv /setup-php /setup-php.$(date -Is)
 fi
 
-if [ ! -z $STARTUP_SCRIPT ]; then
+if [ ! -z "$STARTUP_SCRIPT" ]; then
   bash $STARTUP_SCRIPT
 fi
 

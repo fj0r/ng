@@ -112,7 +112,7 @@ echo -n "$! " >> /var/run/services
 ################################################################################
 echo "[$(date -Is)] starting nginx"
 ################################################################################
-if [ ! -z $WEB_ROOT ]; then
+if [ ! -z "$WEB_ROOT" ]; then
     sed -i 's!\(set $root\).*$!\1 '"\'$WEB_ROOT\'"';!' /etc/nginx/nginx.conf
 fi
 

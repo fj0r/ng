@@ -9,7 +9,7 @@ if [[ "$DEBUG" == 'true' ]]; then
     set -x
 fi
 
-if [ ! -z $STARTUP_SCRIPT ]; then
+if [ ! -z "$STARTUP_SCRIPT" ]; then
   bash $STARTUP_SCRIPT
 fi
 
@@ -76,7 +76,7 @@ echo -n "$! " >> /var/run/services
 ################################################################################
 echo "[$(date -Is)] starting nginx"
 ################################################################################
-if [ ! -z $WEB_ROOT ]; then
+if [ ! -z "$WEB_ROOT" ]; then
     sed -i 's!\(set $root\).*$!\1 '"\'$WEB_ROOT\'"';!' /etc/nginx/nginx.conf
 fi
 

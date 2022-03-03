@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ ! -z $STARTUP_SCRIPT ]; then
+if [ ! -z "$STARTUP_SCRIPT" ]; then
   bash $STARTUP_SCRIPT
 fi
 
