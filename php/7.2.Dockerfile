@@ -25,7 +25,7 @@ RUN set -eux \
   ; echo "deb https://packages.sury.org/php/ bullseye main" \
     | tee /etc/apt/sources.list.d/php7.list \
   ; apt-get update \
-  ; apt-get install -y --no-install-recommends $PHP_PKGS cron \
+  ; apt-get install -y --no-install-recommends $PHP_PKGS cron s3fs \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux \
