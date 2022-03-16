@@ -104,5 +104,27 @@ fi
 echo -n "$! " >> /var/run/services
 
 ################################################################################
+################################################################################
+s3opt=""
+for i in "${!s3_@}"; do
+    _key=${i:3}
+    _value=$(eval "echo \$$i")
+    if [ -z "$_value" ]; then
+        s3opt+="--$_key "
+    else
+        s3opt+="--$_key $_value "
+    fi
+done
+# $AWS_ACCESS_KEY_ID
+if [ ! -z "$AWS_SECRET_ACCESS_KEY" ]; then
+    echo "[$(date -Is)] starting goofys"
+    mkdir -p $S3MOUNTPOINT
+    cmd="/usr/local/bin/goofys -f $s3opt --endpoint $S3ENDPOINT $S3BUCKET $S3MOUNTPOINT"
+    echo $cmd
+    eval $cmd 2>&1 &
+    echo -n "$! " >> /var/run/services
+fi
+
+################################################################################
 
 wait -n $(cat /var/run/services) && exit $?
