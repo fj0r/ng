@@ -21,6 +21,8 @@ ENV PHP_PKGS \
         php${PHP_VERSION}-xdebug
 
 RUN set -eux \
+  ; apt-get update \
+  ; apt-get install -y --no-install-recommends gnupg \
   ; curl -sSL https://packages.sury.org/php/apt.gpg | apt-key add \
   ; echo "deb https://packages.sury.org/php/ bullseye main" \
     | tee /etc/apt/sources.list.d/php7.list \
