@@ -8,9 +8,10 @@ ENV DEV_DEPS \
         libpcre3-dev libssl-dev \
         zlib1g-dev
 
-ENV BUILD_DEPS lsb-release software-properties-common build-essential git gnupg
+ENV BUILD_DEPS lsb-release software-properties-common build-essential git gnupg binutils
 
 ENV PATH=/opt/nginx/sbin:$PATH
+ENV XDG_CONFIG_HOME=/etc
 
 RUN set -eux \
   ; apt-get update \
@@ -24,12 +25,16 @@ RUN set -eux \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
   \
-  ; mkdir -p /opt/helix \
-  ; helix_url=$(curl -sSL https://api.github.com/repos/helix-editor/helix/releases -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
-  ; curl -sSL ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
-  ; ln -sf /opt/helix/hx /usr/local/bin/h \
-  ; mkdir -p ~/.config/helix \
-  ; curl -sSL https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > ~/.config/helix/config.toml \
+  ; nvim_url=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases -H 'Accept: application/vnd.github.v3+json' \
+             | jq -r '[.[]|select(.prerelease == false)][0].assets[].browser_download_url' | grep -v sha256sum | grep linux64) \
+  ; mkdir -p /usr/local \
+  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; strip /usr/local/bin/nvim \
+  ; rm -rf $XDG_CONFIG_HOME/nvim \
+  ; git clone --depth=1 https://github.com/fj0r/nvim-lua.git $XDG_CONFIG_HOME/nvim \
+  ; git clone --depth=1 https://github.com/wbthomason/packer.nvim $XDG_CONFIG_HOME/nvim/pack/packer/start/packer.nvim \
+  ; nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' \
+  ; rm -rf $XDG_CONFIG_HOME/nvim/pack/packer/*/*/.git \
   \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
