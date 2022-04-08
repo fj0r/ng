@@ -3,6 +3,7 @@ FROM postgres:14
 ENV BUILD_DEPS \
     git \
     cmake \
+    binutils \
     m4 \
     pkg-config \
     lsb-release \
@@ -23,6 +24,7 @@ ENV BUILD_DEPS \
 #    libxslt-dev \
 #    libzstd-dev
 
+ENV XDG_CONFIG_HOME=/etc
 #ENV LANG zh_CN.utf8
 ENV TIMEZONE=Asia/Shanghai
 RUN set -eux \
@@ -129,13 +131,16 @@ RUN set -eux \
       | jq -r '.[0].assets[].browser_download_url' | grep pg_flame.tar.gz) \
   ; curl -sSL ${pg_flame_url} | tar zxf - -C /opt/pg_flame \
   \
-  ; mkdir -p /opt/helix \
-  ; helix_url=$(curl -sSL https://api.github.com/repos/helix-editor/helix/releases -H "Accept: application/vnd.github.v3+json" \
-      | jq -r '.[0].assets[].browser_download_url' | grep x86_64-linux) \
-  ; curl -sSL ${helix_url} | tar Jxf - -C /opt/helix --strip-components=1 \
-  ; ln -sf /opt/helix/hx /usr/local/bin/h \
-  ; mkdir -p /etc/skel/.config/helix && ln -sf /etc/skel/.config /root \
-  ; curl -sSL https://raw.githubusercontent.com/fj0r/configuration/main/helix/config.toml > /etc/skel/.config/helix/config.toml \
+  ; nvim_url=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases -H 'Accept: application/vnd.github.v3+json' \
+             | jq -r '[.[]|select(.prerelease == false)][0].assets[].browser_download_url' | grep -v sha256sum | grep linux64) \
+  ; mkdir -p /usr/local \
+  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; strip /usr/local/bin/nvim \
+  ; rm -rf $XDG_CONFIG_HOME/nvim \
+  ; git clone --depth=1 https://github.com/fj0r/nvim-lua.git $XDG_CONFIG_HOME/nvim \
+  ; git clone --depth=1 https://github.com/wbthomason/packer.nvim $XDG_CONFIG_HOME/nvim/pack/packer/start/packer.nvim \
+  ; nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' \
+  ; rm -rf $XDG_CONFIG_HOME/nvim/pack/packer/*/*/.git \
   \
   ; apt-get purge -y --auto-remove ${BUILD_DEPS:-} \
   #    ${BUILD_CITUS_DEPS:-} \
