@@ -55,6 +55,17 @@ RUN set -eux \
       uuid mariadb-client \
       ${BUILD_DEPS:-} \
       #${BUILD_CITUS_DEPS:-} \
+  \
+  ; nvim_url=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases -H 'Accept: application/vnd.github.v3+json' \
+             | jq -r '[.[]|select(.prerelease == false)][0].assets[].browser_download_url' | grep -v sha256sum | grep linux64) \
+  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; strip /usr/local/bin/nvim \
+  #; rm -rf $XDG_CONFIG_HOME/nvim \
+  ; git clone --depth=1 https://github.com/fj0r/nvim-lua.git $XDG_CONFIG_HOME/nvim \
+  ; git clone --depth=1 https://github.com/wbthomason/packer.nvim $XDG_CONFIG_HOME/nvim/pack/packer/start/packer.nvim \
+  ; nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' \
+  ; rm -rf $XDG_CONFIG_HOME/nvim/pack/packer/*/*/.git \
+  \
   ; pip3 --no-cache-dir install \
       pgcli pygments \
       numpy httpx pyyaml deepmerge cachetools \
@@ -130,16 +141,6 @@ RUN set -eux \
   ; pg_flame_url=$(curl -sSL https://api.github.com/repos/fj0r/pg_flame/releases -H "Accept: application/vnd.github.v3+json" \
       | jq -r '.[0].assets[].browser_download_url' | grep pg_flame.tar.gz) \
   ; curl -sSL ${pg_flame_url} | tar zxf - -C /opt/pg_flame \
-  \
-  ; nvim_url=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases -H 'Accept: application/vnd.github.v3+json' \
-             | jq -r '[.[]|select(.prerelease == false)][0].assets[].browser_download_url' | grep -v sha256sum | grep linux64) \
-  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
-  ; strip /usr/local/bin/nvim \
-  #; rm -rf $XDG_CONFIG_HOME/nvim \
-  ; git clone --depth=1 https://github.com/fj0r/nvim-lua.git $XDG_CONFIG_HOME/nvim \
-  ; git clone --depth=1 https://github.com/wbthomason/packer.nvim $XDG_CONFIG_HOME/nvim/pack/packer/start/packer.nvim \
-  ; nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' \
-  ; rm -rf $XDG_CONFIG_HOME/nvim/pack/packer/*/*/.git \
   \
   ; apt-get purge -y --auto-remove ${BUILD_DEPS:-} \
   #    ${BUILD_CITUS_DEPS:-} \
