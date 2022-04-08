@@ -7,7 +7,7 @@ name: build postgres
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, pg ]
 
 env:
   REGISTRY: docker.io
