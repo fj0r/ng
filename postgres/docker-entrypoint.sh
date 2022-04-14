@@ -172,10 +172,11 @@ docker_process_init_files() {
 					. "$f"
 				fi
 				;;
-			*.sql)    echo "$0: running $f"; docker_process_sql -f "$f"; echo ;;
-			*.sql.gz) echo "$0: running $f"; gunzip -c "$f" | docker_process_sql; echo ;;
-			*.sql.xz) echo "$0: running $f"; xzcat "$f" | docker_process_sql; echo ;;
-			*)        echo "$0: ignoring $f" ;;
+			*.sql)     echo "$0: running $f"; docker_process_sql -f "$f"; echo ;;
+			*.sql.gz)  echo "$0: running $f"; gunzip -c "$f" | docker_process_sql; echo ;;
+			*.sql.xz)  echo "$0: running $f"; xzcat "$f" | docker_process_sql; echo ;;
+			*.sql.zst) echo "$0: running $f"; zstd -dc "$f" | docker_process_sql; echo ;;
+			*)         echo "$0: ignoring $f" ;;
 		esac
 		echo
 	done
@@ -240,10 +241,6 @@ pg_setup_hba_conf() {
 	local auth
 	# check the default/configured encryption and use that as the auth method
 	auth="$(postgres -C password_encryption "$@")"
-	# postgres 9 only reports "on" and not "md5"
-	if [ "$auth" = 'on' ]; then
-		auth='md5'
-	fi
 	: "${POSTGRES_HOST_AUTH_METHOD:=$auth}"
 	{
 		echo
@@ -302,21 +299,21 @@ pg_setup_conf() {
 	for i in "${!PGCONF_@}"; do
 		local k=$(echo ${i:7} | tr '[:upper:]' '[:lower:]' | sed 's!__!.!g')
 		local v=$(eval "echo \"\$$i\"")
-        if [ -n "$v" ]; then
-			echo "$k = $v" >> $PGDATA/usr.conf
-		fi
+	if [ -n "$v" ]; then
+		echo "$k = $v" >> $PGDATA/usr.conf
+	fi
 	done
 	echo "pg_stat_statements.max = 10000" >> $PGDATA/usr.conf
 	echo "pg_stat_statements.track = all" >> $PGDATA/usr.conf
 }
 
 initialize_password() {
-    if [ -z "$POSTGRES_PASSWORD" ]; then
-        export POSTGRES_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 19)
-        echo
-        echo "export \$POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
-        echo
-    fi
+	if [ -z "$POSTGRES_PASSWORD" ]; then
+		export POSTGRES_PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 19)
+		echo
+		echo "export \$POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+		echo
+	fi
 }
 
 _main() {
@@ -336,8 +333,7 @@ _main() {
 
 		# only run initialization on an empty data directory
 		if [ -z "$DATABASE_ALREADY_EXISTS" ]; then
-		    initialize_password
-
+			initialize_password
 			docker_verify_minimum_env
 
 			# check dir permissions to reduce likelihood of half-initialized database
@@ -375,4 +371,3 @@ _main() {
 if ! _is_sourced; then
 	_main "$@"
 fi
-
