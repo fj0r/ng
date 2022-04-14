@@ -79,16 +79,23 @@ RUN set -eux \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
   \
+  #; cd $build_dir \
+  #; git clone https://github.com/jaiminpan/pg_jieba \
+  #; cd pg_jieba \
+  #; git submodule update --init --recursive  \
+  #; mkdir build \
+  #; cd build \
+  #; cmake .. \
+  #    -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/${PG_MAJOR}/server \
+  #; make \
+  #; make install \
+  \
   ; cd $build_dir \
-  ; git clone https://github.com/jaiminpan/pg_jieba \
-  ; cd pg_jieba \
-  ; git submodule update --init --recursive  \
-  ; mkdir build \
-  ; cd build \
-  ; cmake .. \
-      -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/${PG_MAJOR}/server \
-  ; make \
-  ; make install \
+  ; curl -sSLO https://packages.groonga.org/debian/groonga-apt-source-latest-bullseye.deb \
+  ; apt install -y -V ./groonga-apt-source-latest-bullseye.deb \
+  ; apt-get update \
+  ; apt-get install -y --no-install-recommends \
+      postgresql-${PG_MAJOR}-pgdg-pgroonga \
   \
   #; cd $build_dir \
   #; citus_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/citusdata/citus/releases | jq -r '.[0].tag_name' | cut -c 2-) \
