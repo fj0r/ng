@@ -67,9 +67,10 @@ RUN set -eux \
   ; rm -rf $XDG_CONFIG_HOME/nvim/pack/packer/*/*/.git \
   \
   ; pip3 --no-cache-dir install \
-      pgcli pygments \
       numpy httpx pyyaml deepmerge cachetools \
       pydantic more-itertools fn.py PyParsing \
+  ; pip3 --no-cache-dir install \
+      pgcli pygments \
   \
   ; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
   ; citus_pkg=$(apt search postgresql-${PG_MAJOR}-citus | awk -F'/' 'NR==3 {print $1}') \

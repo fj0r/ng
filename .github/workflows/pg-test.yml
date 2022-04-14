@@ -7,7 +7,7 @@ name: build postgres
 
 on:
   push:
-    branches: [ main ]
+    branches: [ pg ]
 
 env:
   REGISTRY: docker.io
@@ -44,20 +44,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build pg
+      - name: Build pg-test
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: postgres
+          file: postgres/groonga.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pg
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Build pgis
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: postgres
-          file: postgres/gis.Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pgis
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pgroonga
           labels: ${{ steps.meta.outputs.labels }}
 
