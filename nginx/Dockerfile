@@ -80,7 +80,6 @@ RUN set -eux \
   ; ln -fs /opt/nginx/conf /etc/nginx \
   ; mkdir -p /etc/nginx/conf.d \
   ; echo 'shopt -s cdable_vars' >> /root/.bashrc \
-  ; echo 'export logs=/opt/nginx/logs' >> /root/.bashrc \
   \
   ; apt-get -y remove ${BUILD_DEPS} \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
