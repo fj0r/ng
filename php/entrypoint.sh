@@ -6,8 +6,8 @@ if [[ "$DEBUG" == 'true' ]]; then
     set -x
 fi
 
-if [ ! -z "$STARTUP_SCRIPT" ]; then
-  bash $STARTUP_SCRIPT
+if [ ! -z "${PREBOOT}" ]; then
+  bash $PREBOOT
 fi
 
 # Add users if $1=user:uid:gid set
@@ -139,4 +139,7 @@ fi
 
 ################################################################################
 
+if [ ! -z "${POSTBOOT}" ]; then
+  bash $POSTBOOT
+fi
 wait -n $(cat /var/run/services) && exit $?

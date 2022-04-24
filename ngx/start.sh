@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-if [ ! -z "$STARTUP_SCRIPT" ]; then
-  bash $STARTUP_SCRIPT
+if [ ! -z "${PREBOOT}" ]; then
+  bash $PREBOOT
 fi
 
 sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
@@ -45,4 +45,7 @@ fi
 
 
 #############################################
+if [ ! -z "${POSTBOOT}" ]; then
+  bash $POSTBOOT
+fi
 wait -n $ngx $sshd && exit $?
