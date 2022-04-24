@@ -1,6 +1,6 @@
 FROM fj0rd/ng
 
-ARG php_version=8.0
+ARG php_version=8.1
 ENV PHP_VERSION=${php_version}
 ENV PHP_PKGS \
         php${PHP_VERSION} \
@@ -20,11 +20,6 @@ ENV PHP_PKGS \
         php${PHP_VERSION}-xdebug
 
 RUN set -eux \
-  ; apt-get update \
-  ; apt-get install -y --no-install-recommends gnupg \
-  ; curl -sSL https://packages.sury.org/php/apt.gpg | apt-key add \
-  ; echo "deb https://packages.sury.org/php/ bullseye main" \
-    | tee /etc/apt/sources.list.d/php7.list \
   ; apt-get update \
   ; apt-get install -y --no-install-recommends $PHP_PKGS \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
