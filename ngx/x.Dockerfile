@@ -1,4 +1,4 @@
 FROM ng:x
 
-COPY config.x /etc/nginx
+COPY config /etc/nginx
 
