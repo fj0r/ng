@@ -85,9 +85,9 @@ if [ ! -z "$WEB_ROOT" ]; then
     sed -i 's!\(set $root\).*$!\1 '"\'$WEB_ROOT\'"';!' /etc/nginx/nginx.conf
 fi
 
-if grep -q '$ngx_resolver' /etc/nginx/nginx.conf; then
-    sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
-fi
+#if grep -q '$ngx_resolver' /etc/nginx/nginx.conf; then
+#    sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
+#fi
 
 /opt/nginx/sbin/nginx 2>&1 &
 echo -n "$! " >> /var/run/services
