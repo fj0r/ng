@@ -55,13 +55,3 @@ profile:
         -v $(pwd)/log:/tmp/xdebug \
         creativeprojects/webgrind
 
-export:
-    #!/bin/zsh
-    docker save nnurphy/phpf:7.2 nnurphy/phpf:5.6 \
-        | zstd -c -18 -T0 \
-        | tee >(ssh eng-37  'zstd -d | docker load') \
-        | tee >(ssh eng     'zstd -d | docker load') \
-        | tee >(ssh eng-dev 'zstd -d | docker load') \
-        | tee >(ssh xmh     'zstd -d | docker load') \
-        | tee >(ssh eainger 'zstd -d | docker load') \
-        > ~/pub/Platform/php/phpf.tar.zst
