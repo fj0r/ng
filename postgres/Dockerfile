@@ -13,7 +13,8 @@ ENV BUILD_DEPS \
     libpq-dev \
     python3-dev \
     libkrb5-dev \
-    postgresql-server-dev-${PG_MAJOR}
+    postgresql-server-dev-${PG_MAJOR} \
+    libs3-dev
 
 #ENV BUILD_CITUS_DEPS \
 #    libicu-dev \
@@ -52,6 +53,8 @@ RUN set -eux \
       pgxnclient \
       python3 python3-pip python3-setuptools \
       libcurl4 curl jq ca-certificates tmux \
+      # parquet_s3_fdw
+      libarrow libparquet \
       uuid mariadb-client \
       ${BUILD_DEPS:-} \
       #${BUILD_CITUS_DEPS:-} \
@@ -106,6 +109,11 @@ RUN set -eux \
   ; mkdir pg_hint_plan \
   ; curl -sSL https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL14_1_4_0.tar.gz | tar zxf - -C pg_hint_plan --strip-components=1 \
   ; cd pg_hint_plan \
+  ; make && make install \
+  \
+  ; cd $build_dir \
+  ; git clone https://github.com/pgspider/parquet_s3_fdw.git \
+  ; cd parquet_s3_fdw \
   ; make && make install \
   \
   ; cd $build_dir \
