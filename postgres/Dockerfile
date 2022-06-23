@@ -75,6 +75,9 @@ RUN set -eux \
   ; pip3 --no-cache-dir install \
       pgcli pygments \
   \
+  ; curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | bash \
+  ; apt-get install -y --no-install-recommends timescaledb-2-postgresql-${PG_MAJOR} \
+  \
   ; curl -sSL https://install.citusdata.com/community/deb.sh | bash \
   ; citus_pkg=$(apt search postgresql-${PG_MAJOR}-citus | awk -F'/' 'NR==3 {print $1}') \
   ; apt-get install -y --no-install-recommends ${citus_pkg} \
@@ -99,6 +102,26 @@ RUN set -eux \
   ; apt-get install -y --no-install-recommends \
       postgresql-${PG_MAJOR}-pgdg-pgroonga \
   \
+  ; cd $build_dir \
+  ; mkdir pg_hint_plan \
+  ; curl -sSL https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL14_1_4_0.tar.gz | tar zxf - -C pg_hint_plan --strip-components=1 \
+  ; cd pg_hint_plan \
+  ; make && make install \
+  \
+  ; cd $build_dir \
+  ; git clone https://github.com/adjust/clickhouse_fdw.git \
+  ; cd clickhouse_fdw \
+  ; mkdir build && cd build \
+  ; cmake .. \
+  ; make && make install \
+  #\
+  #; cd $build_dir \
+  #; git clone https://github.com/timescale/timescaledb.git \
+  #; cd timescaledb \
+  #; git checkout master \
+  #; ./bootstrap \
+  #; cd build && make \
+  #; make install \
   #; cd $build_dir \
   #; citus_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/citusdata/citus/releases | jq -r '.[0].tag_name' | cut -c 2-) \
   #; curl -sSL https://github.com/citusdata/citus/archive/refs/tags/v${citus_version}.tar.gz | tar zxf - \
@@ -121,29 +144,6 @@ RUN set -eux \
   #; cd zson-${zson_version} \
   #; make && make install \
   #\
-  ; cd $build_dir \
-  ; mkdir pg_hint_plan \
-  ; curl -sSL https://github.com/ossc-db/pg_hint_plan/archive/refs/tags/REL14_1_4_0.tar.gz | tar zxf - -C pg_hint_plan --strip-components=1 \
-  ; cd pg_hint_plan \
-  ; make && make install \
-  \
-  #; cd $build_dir \
-  #; git clone https://github.com/adjust/clickhouse_fdw.git \
-  #; cd clickhouse_fdw \
-  #; mkdir build && cd build \
-  #; cmake .. \
-  #; make && make install \
-  #\
-  #; cd $build_dir \
-  #; git clone https://github.com/timescale/timescaledb.git \
-  #; cd timescaledb \
-  #; git checkout master \
-  #; ./bootstrap \
-  #; cd build && make \
-  #; make install \
-  \
-  ; curl -s https://packagecloud.io/install/repositories/timescale/timescaledb/script.deb.sh | bash \
-  ; apt-get install -y --no-install-recommends timescaledb-2-postgresql-${PG_MAJOR} \
   \
   ; rm -rf $build_dir \
   \
