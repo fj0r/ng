@@ -45,8 +45,7 @@ RUN set -eux \
   ; curl -sSL https://github.com/fdintino/nginx-upload-module/archive/refs/tags/${UPLOAD_VER}.tar.gz | tar -zxf - -C nginx-upload --strip-components=1 \
   \
   ; cd $build_dir \
-  ; NCHAN_VER=$(curl -sSL https://api.github.com/repos/slact/nchan/tags -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; git clone --depth=1 https://github.com/slact/nchan.git \
   \
   ; cd $build_dir \
   ; mkdir njs \
@@ -76,7 +75,7 @@ RUN set -eux \
         --with-stream_ssl_preread_module \
         --add-module=../njs/nginx \
         --add-module=../nginx-upload \
-        --add-dynamic-module=../nchan-${NCHAN_VER} \
+        --add-dynamic-module=../nchan \
         --http-log-path=/var/log/nginx/access.log \
         --error-log-path=/var/log/nginx/error.log \
   ; make \

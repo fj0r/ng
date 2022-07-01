@@ -6,6 +6,7 @@ COPY --from=dropbear / /
 ARG BUILD_DEPS="\
     jq \
     curl \
+    git \
     build-base \
     linux-headers \
     "
@@ -21,6 +22,11 @@ RUN set -eux \
   ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
   ; echo "$TIMEZONE" > /etc/timezone \
   \
+  ; git config --global pull.rebase false \
+  ; git config --global init.defaultBranch main \
+  ; git config --global user.name "unnamed" \
+  ; git config --global user.email "unnamed@container" \
+  \
   ; mkdir /etc/dropbear \
   \
   ; xh_ver=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ducaale/xh/releases | jq -r '.[0].tag_name') \
@@ -33,8 +39,7 @@ RUN set -eux \
   ; UPLOAD_VER=$(curl -sSL https://api.github.com/repos/fdintino/nginx-upload-module/tags -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].name') \
   ; curl -sSL https://github.com/fdintino/nginx-upload-module/archive/refs/tags/${UPLOAD_VER}.tar.gz | tar -zxf - -C nginx-upload --strip-components=1 \
   \
-  ; NCHAN_VER=$(curl -sSL https://api.github.com/repos/slact/nchan/tags -H 'Accept: application/vnd.github.v3+json' | jq -r '.[0].name' | cut -c 2-) \
-  ; curl -sSL https://github.com/slact/nchan/archive/v${NCHAN_VER}.tar.gz | tar -zxf - \
+  ; git clone --depth=1 https://github.com/slact/nchan.git \
   \
   ; mkdir njs \
   ; curl -sSL http://hg.nginx.org/njs/archive/tip.tar.gz | tar -zxf - --strip-components=1 -C njs \
@@ -62,7 +67,7 @@ RUN set -eux \
         --with-stream_ssl_preread_module \
         --add-module=../njs/nginx \
         --add-module=../nginx-upload \
-        --add-dynamic-module=../nchan-${NCHAN_VER} \
+        --add-dynamic-module=../nchan \
         --http-log-path=/var/log/nginx/access.log \
         --error-log-path=/var/log/nginx/error.log \
   ; make \
