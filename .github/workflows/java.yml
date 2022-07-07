@@ -44,23 +44,23 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build java11
+      - name: Build java17
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: java
-          file: java/jdk-11.Dockerfile
+          file: java/jdk-17.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:java11
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:java17
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build es
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: java
-          file: java/es.Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:es
-          labels: ${{ steps.meta.outputs.labels }}
+      #- name: Build es
+      #  uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      #  with:
+      #    context: java
+      #    file: java/es.Dockerfile
+      #    push: ${{ github.event_name != 'pull_request' }}
+      #    tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:es
+      #    labels: ${{ steps.meta.outputs.labels }}
 
       #- name: Build polynote
       #  uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
