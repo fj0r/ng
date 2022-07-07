@@ -1,19 +1,20 @@
-FROM fj0rd/java:11
+FROM fj0rd/java:17 as build
 
 WORKDIR /pulsar
-ENV PATH=/pulsar/bin:$PATH
-ARG github_header="Accept: application/vnd.github.v3+json"
-ARG github_api=https://api.github.com/repos
-ARG pulsar_repo=apache/pulsar
-ARG pulsarctl_repo=streamnative/pulsarctl
 RUN set -eux \
-  ; pulsar_version=$(curl -sSL $github_api/${pulsar_repo}/releases -H $github_header | jq -r '.[0].tag_name'|cut -c 2-) \
-  ; pulsar_url="https://www.apache.org/dyn/mirrors/mirrors.cgi?action=download&filename=pulsar/pulsar-${pulsar_version}/apache-pulsar-${pulsar_version}-bin.tar.gz" \
-  ; curl -sSL ${pulsar_url} | tar zxf - -C /pulsar --strip-components=1 \
+  ; pulsar_version=$(curl -sSL https://api.github.com/repos/apache/pulsar/releases -H "Accept: application/vnd.github.v3+json" | jq -r '.[0].tag_name'|cut -c 2-) \
+  ; curl -sSL https://github.com/apache/pulsar/archive/refs/tags/v${pulsar_version}.tar.gz | tar zxf - --strip-components=1 \
+  ; mvn install -Pcore-modules,-main -DskipTests \
+  ; mkdir /opt/pulsar \
+  ; tar zxf ~/.m2/repository/org/apache/pulsar/pulsar-server-distribution/${pulsar_version}/pulsar-server-distribution-${pulsar_version}-bin.tar.gz -C /opt/pulsar --strip-components=1
   \
-  ; pulsarctl_version=$(curl -sSL $github_api/${pulsarctl_repo}/releases -H $github_header | jq -r '.[0].tag_name') \
-  ; pulsarctl_url=https://github.com/${pulsarctl_repo}/releases/download/${pulsarctl_version}/pulsarctl-amd64-linux.tar.gz \
-  ; curl -sSL ${pulsarctl_url} | tar zxf - -C /usr/local/bin --strip-components=1
   # \
   # ; pip3 --default-timeout=100 --no-cache-dir install pulsar-client==${pulsar_version} \
   # ; pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+
+FROM fj0rd/java:17
+ENV PATH=/pulsar/bin:$PATH
+WORKDIR /pulsar
+COPY --from=build /opt/pulsar /pulsar
+
