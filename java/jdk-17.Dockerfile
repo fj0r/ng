@@ -1,5 +1,7 @@
 FROM fj0rd/io
 
+ENV PATH=/opt/mvn/bin:/opt/language-server/jdtls/bin:$PATH
+
 RUN set -eux \
   ; apt-get update \
   ; apt-get upgrade -y \
@@ -7,6 +9,11 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
       openjdk-17-jdk \
+  ; mkdir /opt/mvn \
+  ; mvn_version=$(curl -sSL https://api.github.com/repos/apache/maven/releases -H 'Accept: application/vnd.github.v3+json' \
+      | jq -r '[.[]|select(.prerelease == false)][0].name') \
+  ; curl https://dlcdn.apache.org/maven/maven-3/${mvn_version}/binaries/apache-maven-${mvn_version}-bin.tar.gz \
+      | tar zxf - -C /opt/mvn --strip-components=1 \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
