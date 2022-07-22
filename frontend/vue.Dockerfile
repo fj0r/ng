@@ -6,6 +6,6 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
   ; npm install -g \
         typescript-language-server typescript \
-        vls \
+        @volar/vue-language-server \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
