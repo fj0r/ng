@@ -64,15 +64,6 @@ init_ssh () {
         chmod go-rwx -R ${_HOME_DIR}/.ssh
     done
 
-    # Fix permissions, if writable
-    if [ -w ~/.ssh ]; then
-        chown root:root ~/.ssh && chmod 700 ~/.ssh/
-    fi
-    if [ -w ~/.ssh/authorized_keys ]; then
-        chown root:root ~/.ssh/authorized_keys
-        chmod 600 ~/.ssh/authorized_keys
-    fi
-
     # Lock root account, if Disabled
     if [[ "${SSH_DISABLE_ROOT}" == "true" ]]; then
         echo "WARNING: root account is now locked. Unset SSH_DISABLE_ROOT to unlock the account."
