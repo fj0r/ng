@@ -40,7 +40,7 @@ RUN set -eux \
   ; git config --global init.defaultBranch main \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
-  ; ln -sfr /usr/bin/python{3,} \
+  ; ln -sf /usr/bin/python3 /usr/bin/python \
   ; pip3 --no-cache-dir install \
         # aiofile fastapi uvicorn \
         debugpy pydantic pytest \

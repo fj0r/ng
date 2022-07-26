@@ -25,5 +25,5 @@ RUN set -eux \
   ; git config --global init.defaultBranch main \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
-  ; ln -sfr /usr/bin/python{3,} \
+  ; ln -sf /usr/bin/python3 /usr/bin/python \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
