@@ -1,4 +1,4 @@
-FROM debian:bullseye as build
+FROM fj0rd/ng:py39 as build
 RUN set -eux \
   ; git clone --depth=1 https://github.com/apache/flink.git \
   ; cd flink \
