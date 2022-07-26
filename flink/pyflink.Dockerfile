@@ -1,21 +1,13 @@
-FROM fj0rd/ng:py39 as build
+FROM fj0rd/ng:java11 as build
 ENV PATH=/opt/mvn/bin:$PATH
 RUN set -eux \
-  ; mkdir /opt/mvn \
-  ; mvn_version=$(curl -sSL https://api.github.com/repos/apache/maven/releases -H 'Accept: application/vnd.github.v3+json' \
-      | jq -r '[.[]|select(.prerelease == false)][0].name') \
-  ; curl https://dlcdn.apache.org/maven/maven-3/${mvn_version}/binaries/apache-maven-${mvn_version}-bin.tar.gz \
-      | tar zxf - -C /opt/mvn --strip-components=1 \
-  \
   ; git clone --depth=1 https://github.com/apache/flink.git \
   ; cd flink \
-  ; echo "JAVA_HOME=$JAVA_HOME" \
-  ; /usr/local/openjdk-11/bin/java \
   ; mvn clean install -DskipTests -Dfast -Pskip-webui-build \
   #; ./mvnw clean package -DskipTests \
   ; python3 -m pip install -r flink-python/dev/dev-requirements.txt \
   ; cd flink-python; python setup.py sdist bdist_wheel \
-  ; cd apache-flink-libraries; python setup.py sdist \
+  ; cd apache-flink-libraries; python3 setup.py sdist \
   ; cd .. \
   ; mkdir -p /assets \
   ; mv apache-flink-libraries/dist/*.tar.gz /assets
