@@ -54,7 +54,7 @@ RUN set -eux \
     | tar Jxf - --strip-components=1 -C /opt/node \
   \
   ; mkdir -p /opt/language-server \
-  ; npm install --location=global
+  ; npm install --location=global \
                 quicktype \
                 pyright \
                 vscode-json-languageserver \
