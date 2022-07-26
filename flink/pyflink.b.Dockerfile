@@ -1,4 +1,18 @@
-FROM flink:1.15.1
+FROM fj0rd/ng:java11 as build
+ENV PATH=/opt/mvn/bin:$PATH
+RUN set -eux \
+  ; git clone --depth=1 https://github.com/apache/flink.git \
+  ; cd flink \
+  ; mvn clean install -DskipTests -Dfast -Pskip-webui-build \
+  #; ./mvnw clean package -DskipTests \
+  ; python3 -m pip install -r flink-python/dev/dev-requirements.txt \
+  ; cd flink-python; python setup.py sdist bdist_wheel \
+  ; cd apache-flink-libraries; python3 setup.py sdist \
+  ; cd .. \
+  ; mkdir -p /assets \
+  ; mv apache-flink-libraries/dist/*.tar.gz /assets
+
+FROM flink:latest
 
 # install python3: it has updated Python to 3.9 in Debian 11 and so install Python 3.7 from source
 # it currently only supports Python 3.6, 3.7 and 3.8 in PyFlink officially.
@@ -13,28 +27,9 @@ ENV PATH=${NODE_ROOT}/bin:$PATH
 
 RUN set -eux \
   ; apt-get update -y \
-  ; apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libffi-dev \
-  ; wget https://www.python.org/ftp/python/3.8.8/Python-3.8.8.tgz \
-  ; tar -xvf Python-3.8.8.tgz \
-  ; cd Python-3.8.8 \
-  ; ./configure --without-tests --enable-shared \
-  ; make -j6 \
-  ; make install \
-  ; ldconfig /usr/local/lib \
-  ; cd .. && rm -f Python-3.8.8.tgz && rm -rf Python-3.8.8 \
-  ; ln -s /usr/local/bin/python3 /usr/local/bin/python \
-  \
-  ; curl -sSLo https://files.pythonhosted.org/packages/45/00/4c83408e971312a2b49d04252e7439d79ce7af2672bd026d70e259e4ba15/apache-flink-1.15.1.tar.gz \
-  ; curl -sSLo https://files.pythonhosted.org/packages/90/91/fb89ce235c3279771d18513e4701d685d2265729bf9d12f8af86964a7b3b/apache-flink-libraries-1.15.1.tar.gz \
-  ; pip3 install apache-flink-libraries*.tar.gz && pip3 install apache-flink*.tar.gz \
-  ; rm apache-flink-libraries*.tar.gz apache-flink*.tar.gz \
-  \
-  ; apt-get clean && rm -rf /var/lib/apt/lists/*
-
-
-RUN set -eux \
-  ; apt-get update -y \
   ; apt-get install -y \
+      python3 python3-pip python3-dev ipython3 \
+      libssl-dev zlib1g-dev libbz2-dev libffi-dev \
       git gnupg build-essential s3fs ripgrep \
       sudo tmux procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
@@ -92,4 +87,9 @@ RUN set -eux \
         neovim neovim-remote \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# install PyFlink
+
+COPY --from=build /assets/apache-flink*.tar.gz /opt/pyflink
+RUN pip3 install /opt/pyflink/*.tar.gz
 
