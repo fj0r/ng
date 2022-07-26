@@ -1,4 +1,4 @@
-name: build pyflink
+name: build py39
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -7,7 +7,7 @@ name: build pyflink
 
 on:
   push:
-    branches: [ pyflink, flink ]
+    branches: [ py39 ]
 
 env:
   REGISTRY: docker.io
@@ -44,12 +44,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build pyflink
+      - name: Build py39
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: flink
-          file: flink/pyflink.Dockerfile
+          file: flink/build.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pyflink
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:py39
           labels: ${{ steps.meta.outputs.labels }}
 

@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM python:3.7-bullseye
 
 ENV XDG_CONFIG_HOME=/etc \
     LANG=C.UTF-8 \
