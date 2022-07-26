@@ -1,6 +1,5 @@
 FROM fj0rd/ng:py39 as build
 ENV PATH=/opt/mvn/bin:$PATH
-ENV JAVA_HOME=/usr/local/openjdk-11
 RUN set -eux \
   ; mkdir /opt/mvn \
   ; mvn_version=$(curl -sSL https://api.github.com/repos/apache/maven/releases -H 'Accept: application/vnd.github.v3+json' \
@@ -10,7 +9,10 @@ RUN set -eux \
   \
   ; git clone --depth=1 https://github.com/apache/flink.git \
   ; cd flink \
-  ; mvn clean install -DskipTests -Dfast -Pskip-webui-build -T 1C \
+  ; echo "JAVA_HOME=$JAVA_HOME" \
+  ; /usr/local/openjdk-11/bin/java \
+  ; mvn clean install -DskipTests -Dfast -Pskip-webui-build \
+  #; ./mvnw clean package -DskipTests \
   ; python3 -m pip install -r flink-python/dev/dev-requirements.txt \
   ; cd flink-python; python setup.py sdist bdist_wheel \
   ; cd apache-flink-libraries; python setup.py sdist \
