@@ -1,7 +1,16 @@
 FROM fj0rd/ng:py39 as build
+ENV PATH=/opt/mvn/bin:$PATH
+ENV JAVA_HOME=/usr/local/openjdk-11
 RUN set -eux \
+  ; mkdir /opt/mvn \
+  ; mvn_version=$(curl -sSL https://api.github.com/repos/apache/maven/releases -H 'Accept: application/vnd.github.v3+json' \
+      | jq -r '[.[]|select(.prerelease == false)][0].name') \
+  ; curl https://dlcdn.apache.org/maven/maven-3/${mvn_version}/binaries/apache-maven-${mvn_version}-bin.tar.gz \
+      | tar zxf - -C /opt/mvn --strip-components=1 \
+  \
   ; git clone --depth=1 https://github.com/apache/flink.git \
   ; cd flink \
+  ; mvn clean install -DskipTests -Dfast -Pskip-webui-build -T 1C \
   ; python3 -m pip install -r flink-python/dev/dev-requirements.txt \
   ; cd flink-python; python setup.py sdist bdist_wheel \
   ; cd apache-flink-libraries; python setup.py sdist \
@@ -40,7 +49,7 @@ RUN set -eux \
   ; git config --global init.defaultBranch main \
   ; git config --global user.name "unnamed" \
   ; git config --global user.email "unnamed@container" \
-  ; ln -sfr /usr/bin/python{3,} \
+  ; ln -sf /usr/bin/python3 /usr/bin/python \
   ; pip3 --no-cache-dir install \
         # aiofile fastapi uvicorn \
         debugpy pydantic pytest \
