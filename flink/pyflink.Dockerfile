@@ -24,10 +24,10 @@ RUN set -eux \
   ; cd .. && rm -f Python-3.8.8.tgz && rm -rf Python-3.8.8 \
   ; ln -s /usr/local/bin/python3 /usr/local/bin/python \
   \
-  ; curl -sSLo https://files.pythonhosted.org/packages/45/00/4c83408e971312a2b49d04252e7439d79ce7af2672bd026d70e259e4ba15/apache-flink-1.15.1.tar.gz \
-  ; curl -sSLo https://files.pythonhosted.org/packages/90/91/fb89ce235c3279771d18513e4701d685d2265729bf9d12f8af86964a7b3b/apache-flink-libraries-1.15.1.tar.gz \
+  ; curl -sSLO https://files.pythonhosted.org/packages/45/00/4c83408e971312a2b49d04252e7439d79ce7af2672bd026d70e259e4ba15/apache-flink-1.15.1.tar.gz \
+  ; curl -sSLO https://files.pythonhosted.org/packages/90/91/fb89ce235c3279771d18513e4701d685d2265729bf9d12f8af86964a7b3b/apache-flink-libraries-1.15.1.tar.gz \
   ; pip3 install apache-flink-libraries*.tar.gz && pip3 install apache-flink*.tar.gz \
-  ; rm apache-flink-libraries*.tar.gz apache-flink*.tar.gz \
+  ; rm -f apache-flink*.tar.gz \
   \
   ; apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -35,7 +35,7 @@ RUN set -eux \
 RUN set -eux \
   ; apt-get update -y \
   ; apt-get install -y \
-      git gnupg build-essential s3fs ripgrep \
+      git gnupg s3fs ripgrep \
       sudo tmux procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \
