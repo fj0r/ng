@@ -7,7 +7,7 @@ name: build pyflink
 
 on:
   push:
-    branches: [ pyflink ]
+    branches: [ pyflink, flink ]
 
 env:
   REGISTRY: docker.io
@@ -47,8 +47,17 @@ jobs:
       - name: Build pyflink
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: java
-          file: java/pyflink.Dockerfile
+          context: flink
+          file: flink/build.Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:py37
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build pyflink
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: flink
+          file: flink/pyflink.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pyflink
           labels: ${{ steps.meta.outputs.labels }}
