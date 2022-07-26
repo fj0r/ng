@@ -18,15 +18,16 @@ ENV XDG_CONFIG_HOME=/etc \
     LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \
     TIMEZONE=Asia/Shanghai \
-    PYTHONUNBUFFERED=x
+    PYTHONUNBUFFERED=x \
+    NODE_ROOT=/opt/node
+ENV PATH=${NODE_ROOT}/bin:$PATH
 
 RUN set -eux \
   ; apt-get update -y \
   ; apt-get install -y \
-        python3 python3-pip ipython3 \
-        s3fs build-essential \
-        libssl-dev zlib1g-dev libbz2-dev libffi-dev \
-      git gnupg build-essential \
+      python3 python3-pip python3-dev ipython3 \
+      libssl-dev zlib1g-dev libbz2-dev libffi-dev \
+      git gnupg build-essential s3fs ripgrep \
       sudo tmux procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \

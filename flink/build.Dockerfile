@@ -11,8 +11,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-      python3 python3-pip ipython3 \
-      git gnupg build-essential \
+      python3 python3-pip ipython3 python3-dev \
+      git gnupg build-essential ripgrep \
       sudo tmux procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \
