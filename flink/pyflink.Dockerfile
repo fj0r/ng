@@ -53,10 +53,11 @@ RUN set -eux \
     | tar Jxf - --strip-components=1 -C /opt/node \
   \
   ; mkdir -p /opt/language-server \
-  ; npm install -g quicktype \
-                   pyright \
-                   vscode-json-languageserver \
-                   yaml-language-server \
+  ; npm install --location=global
+                quicktype \
+                pyright \
+                vscode-json-languageserver \
+                yaml-language-server \
   ; sed -i "s/\(exports.KUBERNETES_SCHEMA_URL = \)\(.*\)$/\1process.env['KUBERNETES_SCHEMA_URL'] || \2/" $(dirname $(which yaml-language-server))/../lib/node_modules/yaml-language-server/out/server/src/languageservice/utils/schemaUrls.js \
   ; npm cache clean -f \
   \
