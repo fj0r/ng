@@ -3,7 +3,7 @@ if [ ! -z "${PREBOOT}" ]; then
   bash $PREBOOT
 fi
 
-#sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
+#sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-1.1.1.1}"'/' /etc/nginx/nginx.conf
 
 stop () {
     kill -s QUIT $ngx

@@ -108,7 +108,7 @@ if [ ! -z "$WEB_ROOT" ]; then
 fi
 
 if grep -q '$ngx_resolver' /etc/nginx/nginx.conf; then
-    sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-8.8.8.8}"'/' /etc/nginx/nginx.conf
+    sed -i 's/$ngx_resolver/'"${NGX_RESOLVER:-1.1.1.1}"'/' /etc/nginx/nginx.conf
 fi
 
 /opt/nginx/sbin/nginx 2>&1 &
