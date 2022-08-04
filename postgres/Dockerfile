@@ -51,13 +51,10 @@ RUN set -eux \
       postgresql-${PG_MAJOR}-pgaudit \
       pgxnclient \
       python3 python3-pip python3-setuptools \
-      libcurl4 curl jq ca-certificates tmux \
+      libcurl4 curl jq ca-certificates \
       uuid mariadb-client \
       ${BUILD_DEPS:-} \
       #${BUILD_CITUS_DEPS:-} \
-  \
-  ; curl -sSL https://github.com/fj0r/configuration/raw/main/_tmux.conf -o /etc/skel/.tmux.conf \
-  ; ln -fs /etc/skel/.tmux.conf /root/.tmux.conf \
   \
   ; nvim_url=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases -H 'Accept: application/vnd.github.v3+json' \
              | jq -r '[.[]|select(.prerelease == false)][0].assets[].browser_download_url' | grep -v sha256sum | grep linux64.tar.gz) \

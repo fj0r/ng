@@ -13,7 +13,7 @@ RUN set -eux \
     apt-get install -y --no-install-recommends \
       python3 python3-pip ipython3 python3-dev \
       git gnupg build-essential ripgrep \
-      sudo tmux procps htop cron logrotate tzdata \
+      sudo procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \
       lsof inetutils-ping iproute2 iptables net-tools \

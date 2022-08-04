@@ -31,7 +31,7 @@ RUN set -eux \
       python3 python3-pip python3-dev ipython3 \
       libssl-dev zlib1g-dev libbz2-dev libffi-dev \
       git gnupg build-essential s3fs ripgrep \
-      sudo tmux procps htop cron logrotate tzdata \
+      sudo procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \
       lsof inetutils-ping iproute2 iptables net-tools \

@@ -12,7 +12,7 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
       git gnupg build-essential \
-      sudo tmux procps htop cron logrotate tzdata \
+      sudo procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \
       lsof inetutils-ping iproute2 iptables net-tools \

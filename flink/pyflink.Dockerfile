@@ -36,7 +36,7 @@ RUN set -eux \
   ; apt-get update -y \
   ; apt-get install -y \
       git gnupg s3fs ripgrep \
-      sudo tmux procps htop cron logrotate tzdata \
+      sudo procps htop cron logrotate tzdata \
       curl ca-certificates rsync tcpdump socat \
       jq tree fuse xz-utils zstd zip unzip \
       lsof inetutils-ping iproute2 iptables net-tools \
