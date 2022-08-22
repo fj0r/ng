@@ -12,6 +12,7 @@ ENV PHP_PKGS \
         php${PHP_VERSION}-gd \
         php${PHP_VERSION}-json \
         php${PHP_VERSION}-mbstring \
+        php${PHP_VERSION}-mcrypt \
         php${PHP_VERSION}-pgsql \
         php${PHP_VERSION}-mysql \
         php${PHP_VERSION}-xml \
