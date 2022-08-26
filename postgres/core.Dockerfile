@@ -1,4 +1,4 @@
-FROM postgres:15beta3
+FROM postgres:14
 
 ENV BUILD_DEPS \
     git \
@@ -28,17 +28,17 @@ RUN set -eux \
   ; apt-get update \
   ; apt-get install -y --no-install-recommends \
       postgresql-plpython3-${PG_MAJOR} \
-      # postgresql-${PG_MAJOR}-wal2json \
-      # postgresql-${PG_MAJOR}-rum \
+      postgresql-${PG_MAJOR}-wal2json \
+      postgresql-${PG_MAJOR}-rum \
       postgresql-${PG_MAJOR}-similarity \
       postgresql-${PG_MAJOR}-rational \
-      # postgresql-${PG_MAJOR}-cron \
+      postgresql-${PG_MAJOR}-cron \
       postgresql-${PG_MAJOR}-extra-window-functions \
       postgresql-${PG_MAJOR}-first-last-agg \
       postgresql-${PG_MAJOR}-ip4r \
-      # postgresql-${PG_MAJOR}-hll \
-      # postgresql-${PG_MAJOR}-jsquery \
-      # postgresql-${PG_MAJOR}-pgaudit \
+      postgresql-${PG_MAJOR}-hll \
+      postgresql-${PG_MAJOR}-jsquery \
+      postgresql-${PG_MAJOR}-pgaudit \
       pgxnclient \
       python3 python3-pip python3-setuptools \
       libcurl4 curl jq ca-certificates uuid \
@@ -67,6 +67,20 @@ RUN set -eux \
   ; cmake .. -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/${PG_MAJOR}/server \
   ; make \
   ; make install \
+  \
+  #; cd $build_dir \
+  #; git clone https://github.com/timescale/timescaledb.git \
+  #; cd timescaledb \
+  #; git checkout master \
+  #; ./bootstrap \
+  #; cd build && make \
+  #; make install \
+  #; cd $build_dir \
+  #; citus_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/citusdata/citus/releases | jq -r '.[0].tag_name' | cut -c 2-) \
+  #; curl -sSL https://github.com/citusdata/citus/archive/refs/tags/v${citus_version}.tar.gz | tar zxf - \
+  #; cd citus-${citus_version} \
+  #; ./configure \
+  #; make && make install \
   #\
   #; cd $build_dir \
   #; anonymizer_version=$(curl -sSL "https://gitlab.com/api/v4/projects/7709206/releases" | jq -r '.[0].name') \
@@ -75,6 +89,14 @@ RUN set -eux \
   #; cd postgresql_anonymizer-${anonymizer_version} \
   #; make extension \
   #; make install \
+  #\
+  \
+  #; cd $build_dir \
+  #; zson_version=$(curl -sSL -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/postgrespro/zson/releases | jq -r '.[0].tag_name' | cut -c 2-) \
+  #; curl -sSL https://github.com/postgrespro/zson/archive/refs/tags/v${zson_version}.tar.gz | tar zxf - \
+  #; cd zson-${zson_version} \
+  #; make && make install \
+  #\
   \
   ; rm -rf $build_dir \
   \
