@@ -8,6 +8,7 @@ ENV BUILD_DEPS \
     pkg-config \
     lsb-release \
     libcurl4-openssl-dev \
+    libicu-dev \
     uuid-dev \
     build-essential \
     libpq-dev \
