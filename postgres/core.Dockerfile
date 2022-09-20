@@ -73,7 +73,7 @@ RUN set -eux \
   ; cd $build_dir \
   ; git clone https://github.com/pgbigm/pg_bigm.git \
   ; cd pg_bigm \
-  ; make && make install \
+  ; make USE_PGXS=1 && make USE_PGXS=1 install \
   \
   #; cd $build_dir \
   #; git clone https://github.com/timescale/timescaledb.git \
