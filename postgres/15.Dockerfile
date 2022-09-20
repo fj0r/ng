@@ -1,4 +1,4 @@
-FROM postgres:15beta3
+FROM postgres:15beta4
 
 ENV BUILD_DEPS \
     git \
@@ -28,17 +28,17 @@ RUN set -eux \
   ; apt-get update \
   ; apt-get install -y --no-install-recommends \
       postgresql-plpython3-${PG_MAJOR} \
-      # postgresql-${PG_MAJOR}-wal2json \
-      # postgresql-${PG_MAJOR}-rum \
+      postgresql-${PG_MAJOR}-wal2json \
+      postgresql-${PG_MAJOR}-rum \
       postgresql-${PG_MAJOR}-similarity \
       postgresql-${PG_MAJOR}-rational \
-      # postgresql-${PG_MAJOR}-cron \
+      postgresql-${PG_MAJOR}-cron \
       postgresql-${PG_MAJOR}-extra-window-functions \
       postgresql-${PG_MAJOR}-first-last-agg \
       postgresql-${PG_MAJOR}-ip4r \
-      # postgresql-${PG_MAJOR}-hll \
-      # postgresql-${PG_MAJOR}-jsquery \
-      # postgresql-${PG_MAJOR}-pgaudit \
+      postgresql-${PG_MAJOR}-hll \
+      postgresql-${PG_MAJOR}-jsquery \
+      postgresql-${PG_MAJOR}-pgaudit \
       pgxnclient \
       python3 python3-pip python3-setuptools \
       libcurl4 curl jq ca-certificates uuid \
@@ -59,14 +59,21 @@ RUN set -eux \
   ; mkdir -p $build_dir \
   \
   ; cd $build_dir \
-  ; git clone https://github.com/jaiminpan/pg_jieba \
-  ; cd pg_jieba \
-  ; git submodule update --init --recursive  \
-  ; mkdir build \
-  ; cd build \
-  ; cmake .. -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/${PG_MAJOR}/server \
-  ; make \
-  ; make install \
+  ; git clone https://github.com/adjust/clickhouse_fdw.git \
+  ; cd clickhouse_fdw \
+  ; mkdir build && cd build \
+  ; cmake .. \
+  ; make && make install \
+  \
+  #; cd $build_dir \
+  #; git clone https://github.com/jaiminpan/pg_jieba \
+  #; cd pg_jieba \
+  #; git submodule update --init --recursive  \
+  #; mkdir build \
+  #; cd build \
+  #; cmake .. -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/${PG_MAJOR}/server \
+  #; make \
+  #; make install \
   #\
   #; cd $build_dir \
   #; anonymizer_version=$(curl -sSL "https://gitlab.com/api/v4/projects/7709206/releases" | jq -r '.[0].name') \
