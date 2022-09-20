@@ -90,11 +90,6 @@ RUN set -eux \
   ; make USE_PGXS=1 && make USE_PGXS=1 install \
   \
   ; cd $build_dir \
-  ; git clone https://github.com/pgspider/parquet_s3_fdw.git \
-  ; cd parquet_s3_fdw \
-  ; make && make install \
-  \
-  ; cd $build_dir \
   ; git clone https://github.com/jaiminpan/pg_jieba \
   ; cd pg_jieba \
   ; git submodule update --init --recursive  \
