@@ -82,6 +82,17 @@ RUN set -eux \
   ; build_dir=/root/build \
   ; mkdir -p $build_dir \
   \
+  \
+  ; cd $build_dir \
+  ; git clone https://github.com/pgbigm/pg_bigm.git \
+  ; cd pg_bigm \
+  ; make && make install \
+  \
+  ; cd $build_dir \
+  ; git clone https://github.com/pgspider/parquet_s3_fdw.git \
+  ; cd parquet_s3_fdw \
+  ; make && make install \
+  \
   ; cd $build_dir \
   ; git clone https://github.com/jaiminpan/pg_jieba \
   ; cd pg_jieba \
