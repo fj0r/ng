@@ -8,7 +8,7 @@ ENV DEV_DEPS \
         libpcre3-dev libssl-dev \
         zlib1g-dev
 
-ENV BUILD_DEPS lsb-release software-properties-common build-essential git gnupg binutils
+ENV BUILD_DEPS lsb-release software-properties-common build-essential gnupg binutils
 
 ENV PATH=/opt/nginx/sbin:$PATH
 ENV XDG_CONFIG_HOME=/etc

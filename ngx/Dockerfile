@@ -6,7 +6,6 @@ COPY --from=dropbear / /
 ARG BUILD_DEPS="\
     jq \
     curl \
-    git \
     build-base \
     linux-headers \
     "
@@ -16,7 +15,7 @@ ENV TIMEZONE=Asia/Shanghai
 
 RUN set -eux \
   ; apk --update add --no-cache \
-    tzdata libcrypto3 bash \
+    tzdata libcrypto3 bash git \
     openssl-dev pcre-dev zlib-dev \
     ${BUILD_DEPS} \
   ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
