@@ -77,19 +77,5 @@ RUN set -eux \
       -C /opt/language-server/sumneko_lua \
       --strip-components=1 \
   \
-  ; nvim_url=$(curl -sSL https://api.github.com/repos/neovim/neovim/releases -H 'Accept: application/vnd.github.v3+json' \
-             | jq -r '.[0].assets[].browser_download_url' | grep -v sha256sum | grep linux64.tar.gz) \
-  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
-  ; strip /usr/local/bin/nvim \
-  ; git clone --depth=1 https://github.com/fj0r/nvim-lua.git $XDG_CONFIG_HOME/nvim \
-  ; git clone --depth=1 https://github.com/wbthomason/packer.nvim $XDG_CONFIG_HOME/nvim/pack/packer/start/packer.nvim \
-  ; nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync' \
-  \
-  ; tsl=$(cat $XDG_CONFIG_HOME/nvim/lua/lang/treesitter_lang.json|jq -r 'join(" ")') \
-  ; nvim --headless -c "TSUpdateSync ${tsl}" -c 'quit' \
-  ; rm -rf $XDG_CONFIG_HOME/nvim/pack/packer/*/*/.git \
-  ; pip3 --no-cache-dir install \
-        neovim neovim-remote \
-  \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
