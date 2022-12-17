@@ -26,8 +26,6 @@ RUN set -eux \
   #      -e 's/# \(zh_CN.UTF-8 UTF-8\)/\1/' \
   #; locale-gen \
   \
-  ; mkdir -p /etc/dropbear \
-  \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 
