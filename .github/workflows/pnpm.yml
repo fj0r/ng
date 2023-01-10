@@ -44,15 +44,25 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build npm
+      - name: Build base
         uses: docker/build-push-action@v3
         with:
           context: pnpm
+          file: pnpm/base.Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pnp
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build pnpm
+        uses: docker/build-push-action@v3
+        with:
+          context: pnpm
+          file: pnpm/pnpm.Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pnpm
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Build node12
+      - name: Build npm
         uses: docker/build-push-action@v3
         with:
           context: pnpm

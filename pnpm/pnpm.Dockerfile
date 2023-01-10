@@ -1,7 +1,7 @@
 FROM fj0rd/ng:pnp
 
 RUN set -eux \
-  ; npm install --location=global \
+  ; pnpm install -g \
         quicktype \
         pyright \
         vscode-langservers-extracted \
@@ -10,13 +10,12 @@ RUN set -eux \
         typescript-language-server typescript \
         vite vite-plugin-solid solid-js \
         @volar/vue-language-server vue \
-  ; npm cache clean -f \
   ;
 
 #RUN set -eux \
 #  ; git clone --depth=1 https://github.com/microsoft/vscode-js-debug.git /opt/language-server/vscode-js-debug \
 #  ; cd /opt/language-server/vscode-js-debug \
-#  ; npm install \
-#  ; NODE_OPTIONS=--no-experimental-fetch npm run compile \
-#  ; npm cache clean -f
+#  ; pnpm install \
+#  ; pnpm run compile \
+#  ;
 
