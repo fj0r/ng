@@ -29,4 +29,14 @@ RUN set -eux \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux \
-  ; pip3 --no-cache-dir install flink
+  ; pip3 --no-cache-dir install flink \
+        numpy pandas \
+  ;
+
+RUN set -eux \
+  ; v=$(flink -v | rg 'Version: (.+),' -or '$1') \
+  ; for c in avro parquet connector-kafka connector-pulsar; do \
+        curl -sSLo /opt/flink/lib/flink-sql-${c}-${v}.jar \
+        https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-${c}/${v}/flink-sql-${c}-${v}.jar ; \
+    done \
+  ;
