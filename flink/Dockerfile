@@ -1,34 +1,11 @@
-FROM flink:latest
+FROM fj0rd/io
 
-ENV XDG_CONFIG_HOME=/etc \
-    LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8 \
-    TIMEZONE=Asia/Shanghai \
-    PYTHONUNBUFFERED=x
-
+ENV PATH=/opt/flink/bin:$PATH
 RUN set -eux \
-  ; apt-get update \
-  ; apt-get upgrade -y \
-  ; DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y --no-install-recommends \
-      python3 python3-pip ipython3 python3-dev \
-      git gnupg build-essential ripgrep \
-      sudo procps htop cron logrotate tzdata \
-      curl ca-certificates rsync tcpdump socat \
-      jq tree fuse xz-utils zstd zip unzip \
-      lsof inetutils-ping iproute2 iptables net-tools \
-  \
-  ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
-  ; echo "$TIMEZONE" > /etc/timezone \
-  ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
-  ; git config --global pull.rebase false \
-  ; git config --global init.defaultBranch main \
-  ; git config --global user.name "unnamed" \
-  ; git config --global user.email "unnamed@container" \
-  ; ln -sf /usr/bin/python3 /usr/bin/python \
-  ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-RUN set -eux \
+  ; mkdir -p /opt/flink \
+  ; curl -sSL https://dlcdn.apache.org/flink/flink-1.16.1/flink-1.16.1-bin-scala_2.12.tgz \
+        | tar -zxf - --strip-components=1 -C /opt/flink \
+  ; sed 's!\(taskmanager.numberOfTaskSlots\).*$!\1: 8!' -i /opt/flink/conf/flink-conf.yaml \
   ; pip3 --no-cache-dir install apache-flink \
         # numpy pandas \
   ;
