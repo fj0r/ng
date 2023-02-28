@@ -7,7 +7,7 @@ name: caddy
 
 on:
   push:
-    branches: [ main, caddy ]
+    branches: [ caddy ]
 
 env:
   REGISTRY: docker.io

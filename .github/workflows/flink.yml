@@ -7,7 +7,7 @@ name: build pyflink
 
 on:
   push:
-    branches: [ pyflink, flink ]
+    branches: [ main, pyflink, flink ]
 
 env:
   REGISTRY: docker.io
