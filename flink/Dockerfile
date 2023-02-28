@@ -29,8 +29,8 @@ RUN set -eux \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux \
-  ; pip3 --no-cache-dir install flink \
-        numpy pandas \
+  ; pip3 --no-cache-dir install apache-flink \
+        # numpy pandas \
   ;
 
 RUN set -eux \
