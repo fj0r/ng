@@ -5,7 +5,7 @@ ARG flink_version=1.16.1
 ENV FLINK_VERSION=${flink_version}
 ENV FLINK_HOME=/opt/flink MVN_HOME=/opt/mvn
 ENV PATH=${FLINK_HOME}/bin:${MVN_HOME}/bin:$PATH
-ENV BUILD_DEPS gpg build-essential libsnappy1v5 gettext-base libjemalloc-dev
+ENV BUILD_DEPS gpg build-essential
 RUN set -eux \
   ; curl -sSLo /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/latest/download/gosu-$(dpkg --print-architecture)" \
   ; chmod +x /usr/local/bin/gosu \
@@ -18,6 +18,7 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
         openjdk-11-jdk \
+        libsnappy1v5 gettext-base libjemalloc-dev \
         ${BUILD_DEPS} \
   \
   ; mkdir ${MVN_HOME} \
@@ -46,7 +47,7 @@ RUN set -eux \
   ; for c in avro parquet connector-kafka connector-pulsar; do \
         curl -sSLo ${FLINK_HOME}/lib/flink-sql-${c}-${FLINK_VERSION}.jar \
         https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-${c}/${FLINK_VERSION}/flink-sql-${c}-${FLINK_VERSION}.jar ; \
-        chown -R flink:flink ${FLINK_HOME}/lib/flink-sql-${c}-${FLINK_VERSION}.jar; \
+        chown flink:flink ${FLINK_HOME}/lib/flink-sql-${c}-${FLINK_VERSION}.jar; \
     done \
   ;
 
