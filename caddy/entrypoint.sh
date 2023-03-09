@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -z "${PREBOOT}" ]; then
+if [ -n "${PREBOOT}" ]; then
   bash $PREBOOT
 fi
 
@@ -74,7 +74,7 @@ env | grep -E '_|HOME|ROOT|PATH|DIR|VERSION|LANG|TIME|MODULE|BUFFERED' \
 trap stop SIGINT SIGTERM
 
 __ssh=$(for i in "${!ed25519_@}"; do echo $i; done)
-if [ ! -z "$__ssh" ] || [ -f /root/.ssh/authorized_keys ]; then
+if [ -n "$__ssh" ] || [ -f /root/.ssh/authorized_keys ]; then
     init_ssh
     /usr/bin/dropbear -REFems -p 22 -K 300 -I 600 2>&1 &
     echo -n "$! " >> /var/run/services
@@ -89,7 +89,7 @@ for i in "${!R_@}"; do
     routes="${routes}${n}: ${r};"
 done
 
-if [ ! -z "$routes" ]; then
+if [ -n "$routes" ]; then
     routes="-inline-routes '${routes}'"
 fi
 
@@ -101,7 +101,7 @@ cmd="/usr/local/bin/caddy run ${caddyfile} ${routes}"
 eval "$cmd &"
 echo -n "$! " >> /var/run/services
 
-if [ ! -z "${POSTBOOT}" ]; then
+if [ -n "${POSTBOOT}" ]; then
   bash $POSTBOOT
 fi
 wait -n $(cat /var/run/services) && exit $?

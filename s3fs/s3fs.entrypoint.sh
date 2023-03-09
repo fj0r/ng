@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ ! -z "${PREBOOT}" ]; then
+if [ -n "${PREBOOT}" ]; then
   bash $PREBOOT
 fi
 
@@ -49,7 +49,7 @@ touch /var/run/services
 ################################################################################
 ################################################################################
 __ssh=$(for i in "${!ed25519_@}"; do echo $i; done)
-if [ ! -z "$__ssh" ] || [ -f /root/.ssh/authorized_keys ]; then
+if [ -n "$__ssh" ] || [ -f /root/.ssh/authorized_keys ]; then
     echo "[$(date -Is)] starting ssh"
     init_ssh
     /usr/bin/dropbear -REFems -p 22 -K 300 -I 600 2>&1 &
@@ -58,7 +58,7 @@ fi
 
 ################################################################################
 ################################################################################
-if [ ! -z "$S3SECRET_KEY" ]; then
+if [ -n "$S3SECRET_KEY" ]; then
     echo "[$(date -Is)] starting s3fs"
 
     s3opt=""
@@ -79,7 +79,7 @@ if [ ! -z "$S3SECRET_KEY" ]; then
     mkdir -p $S3MOUNTPOINT
     chown $s3user $S3MOUNTPOINT
 
-    if [ ! -z "${S3REGION}" ]; then
+    if [ -n "${S3REGION}" ]; then
         _region="-o endpoint=$S3REGION"
     else
         _region="-o use_path_request_style"
@@ -90,7 +90,7 @@ if [ ! -z "$S3SECRET_KEY" ]; then
     echo -n "$! " >> /var/run/services
 fi
 
-if [ ! -z "${POSTBOOT}" ]; then
+if [ -n "${POSTBOOT}" ]; then
   bash $POSTBOOT
 fi
 

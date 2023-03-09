@@ -26,7 +26,7 @@ touch /var/run/services
 ################################################################################
 echo "[$(date -Is)] starting conduit"
 ################################################################################
-if [ ! -z "$SERVER_NAME" ]; then
+if [ -n "$SERVER_NAME" ]; then
     HOST=$(echo "$SERVER_NAME" | sed 's!https*://\(.*\)!\1!' | awk -F':' '{print $1}')
 
     if [ ! -f '/var/lib/conduit/conduit.toml' ]; then
