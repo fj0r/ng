@@ -10,7 +10,7 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    $BUILD_DEPS s3fs \
+    $BUILD_DEPS \
   \
   ; git config --global pull.rebase false \
   ; git config --global init.defaultBranch main \

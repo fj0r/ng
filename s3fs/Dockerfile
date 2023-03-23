@@ -30,11 +30,6 @@ RUN set -eux \
 
 
 WORKDIR /data
-ENV AWS_ACCESS_KEY_ID=
-ENV AWS_SECRET_ACCESS_KEY=
-ENV S3ENDPOINT=
-ENV S3BUCKET=
-ENV S3MOUNTPOINT=/data
 
 COPY entrypoint.sh /entrypoint.sh
 ENTRYPOINT [ "/entrypoint.sh" ]
