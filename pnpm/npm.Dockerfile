@@ -14,8 +14,8 @@ RUN set -eux \
   ;
 
 #RUN set -eux \
-#  ; git clone --depth=1 https://github.com/microsoft/vscode-js-debug.git /opt/language-server/vscode-js-debug \
-#  ; cd /opt/language-server/vscode-js-debug \
+#  ; git clone --depth=1 https://github.com/microsoft/vscode-js-debug.git ${LS_ROOT}/vscode-js-debug \
+#  ; cd ${LS_ROOT}/vscode-js-debug \
 #  ; npm install \
 #  ; NODE_OPTIONS=--no-experimental-fetch npm run compile \
 #  ; npm cache clean -f

@@ -2,6 +2,7 @@ FROM ubuntu:jammy
 
 ENV NODE_ROOT=/opt/node
 ENV PNPM_HOME=/opt/pnpm
+ENV LS_ROOT=/opt/language-server
 ENV PATH=${PNPM_HOME}:${NODE_ROOT}/bin:$PATH
 
 RUN set -eux \
@@ -25,7 +26,7 @@ RUN set -eux \
   ; curl -sSL https://nodejs.org/dist/v${node_version}/node-v${node_version}-linux-x64.tar.xz \
     | tar Jxf - --strip-components=1 -C ${NODE_ROOT} \
   \
-  ; mkdir -p /opt/language-server \
+  ; mkdir -p ${LS_ROOT} \
   ; npm install --location=global pnpm \
   ; mkdir -p ${PNPM_HOME} \
   ; pnpm config set store-dir ${PNPM_HOME} \
