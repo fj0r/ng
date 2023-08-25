@@ -26,11 +26,11 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-      pwgen python3 python3-pip ipython3 \
+      pwgen python3 python3-pip \
       # python3-dev python3-setuptools \
   ; pip3 --no-cache-dir install \
         # aiofile fastapi uvicorn \
-        debugpy pydantic pytest \
+        ipython debugpy pydantic pytest \
         httpx hydra-core typer pyyaml deepmerge \
         PyParsing structlog python-json-logger \
         decorator more-itertools cachetools \
